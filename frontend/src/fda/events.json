@@ -1,0 +1,134 @@
+{
+    "meta": {
+      "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service. Submission of an adverse event report does not constitute an admission that a product caused or contributed to an event. The information in these reports has not been scientifically or otherwise verified as to a cause and effect relationship and cannot be used to estimate incidence (occurrence rate) or to estimate risk.",
+      "terms": "https://open.fda.gov/terms/",
+      "license": "https://open.fda.gov/license/",
+      "last_updated": "2024-03-10",
+      "results": {
+        "skip": 0,
+        "limit": 5,
+        "total": 132993
+      }
+    },
+    "results": [
+      {
+        "report_number": "101034",
+        "outcomes": [
+          "Other Outcome"
+        ],
+        "date_created": "20080215",
+        "reactions": [
+          "BACK PAIN"
+        ],
+        "date_started": "20071202",
+        "consumer": {
+          "gender": "Male"
+        },
+        "products": [
+          {
+            "role": "SUSPECT",
+            "name_brand": "PALO ALTO LABS ASPIRE 36",
+            "industry_code": "54",
+            "industry_name": "Vit/Min/Prot/Unconv Diet(Human/Animal)"
+          }
+        ]
+      },
+      {
+        "report_number": "107431",
+        "outcomes": [
+          "Other Outcome"
+        ],
+        "date_created": "20081023",
+        "reactions": [
+          "HEADACHE"
+        ],
+        "date_started": "20080821",
+        "consumer": {
+          "age": "21",
+          "age_unit": "year(s)",
+          "gender": "Male"
+        },
+        "products": [
+          {
+            "role": "SUSPECT",
+            "name_brand": "EG LABS VIAPRO 375MG",
+            "industry_code": "54",
+            "industry_name": "Vit/Min/Prot/Unconv Diet(Human/Animal)"
+          }
+        ]
+      },
+      {
+        "report_number": "114276",
+        "outcomes": [
+          "Other Serious or Important Medical Event",
+          "Other Serious Outcome"
+        ],
+        "date_created": "20090612",
+        "reactions": [
+          "ABORTION SPONTANEOUS",
+          "PREMATURE LABOUR"
+        ],
+        "date_started": "20090601",
+        "consumer": {
+          "age": "37",
+          "age_unit": "year(s)",
+          "gender": "Female"
+        },
+        "products": [
+          {
+            "role": "SUSPECT",
+            "name_brand": "FLINTSTONES COMPLETE",
+            "industry_code": "54",
+            "industry_name": "Vit/Min/Prot/Unconv Diet(Human/Animal)"
+          }
+        ]
+      },
+      {
+        "report_number": "122363",
+        "outcomes": [
+          "Other Outcome"
+        ],
+        "date_created": "20100105",
+        "reactions": [
+          "NAUSEA"
+        ],
+        "date_started": "20091225",
+        "consumer": {
+          "gender": "Male"
+        },
+        "products": [
+          {
+            "role": "SUSPECT",
+            "name_brand": "HOTSAUCE.COM ASS-KICKIN' PISTACHIOS",
+            "industry_code": "23",
+            "industry_name": "Nuts/Edible Seed"
+          }
+        ]
+      },
+      {
+        "report_number": "125480",
+        "outcomes": [
+          "Other Outcome"
+        ],
+        "date_created": "20090620",
+        "reactions": [
+          "BODY TEMPERATURE INCREASED",
+          "DIARRHOEA",
+          "FATIGUE",
+          "HEADACHE"
+        ],
+        "date_started": null,
+        "consumer": {
+          "gender": "Female"
+        },
+        "products": [
+          {
+            "role": "SUSPECT",
+            "name_brand": "NESTLE'S TOLL HOUSE WALNUT CHOC CHIP COOKIE",
+            "industry_code": "3",
+            "industry_name": "Bakery Prod/Dough/Mix/Icing"
+          }
+        ]
+      }
+    ]
+  }
