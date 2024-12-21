@@ -6,12 +6,12 @@ const { findOne } = require('../models/tokenModel')
 //@desc Get all fda recalls
 //@route GETT /api/fda
 //@access Public
-const getRecalls = asyncHandler(async(req, res) => {
+const getRecalls = asyncHandler(async (req, res) => {
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url:  "https://api.fda.gov/food/enforcement.json?api_key=UfWlZLSEWUUJqeY3s0Qagdt7u5vsDThx1Jb4zKSA&search=report_date:[20230801+TO+20231231]&limit=1000",
-        headers: { }
+        url: "https://api.fda.gov/food/enforcement.json?api_key=UfWlZLSEWUUJqeY3s0Qagdt7u5vsDThx1Jb4zKSA&search=report_date:[20230801+TO+20231231]&limit=1000",
+        headers: {}
     }
 
     try {
@@ -20,18 +20,17 @@ const getRecalls = asyncHandler(async(req, res) => {
         const response = await axios.request(config)
         const data = await response.data
         const { results } = data
-        for(let i=0; i<results.length; i++) {
-            if(a.includes(results[i].event_id)) continue;
+        for (let i = 0; i < results.length; i++) {
+            if (a.includes(results[i].event_id)) continue;
             a.push(results[i].event_id)
             newArray.push(results[i])
         }
-        console.log(newArray.length)
         const fda = await Fda.findOne({})
         for (let i = 0; i < newArray.length; i++) {
             fda.results.push(newArray[i]);
         }
         await fda.save()
-        res.status(200).json(newArray.length)
+        res.status(200).json(newArray)
     } catch (error) {
         console.log(error)
     }
@@ -68,10 +67,17 @@ const getRecalls = asyncHandler(async(req, res) => {
       })()*/
 })
 
-const getFdaRecalls = asyncHandler(async(req, res) => {
-    const fdaRecalls = await Fda.find({})
-    //const { results } = fdaRecalls
-    res.status(200).json(fdaRecalls.length)
+const getFdaRecalls = asyncHandler(async (req, res) => {
+    const fdaRecalls = await Fda.findOne({})
+    const { results } = fdaRecalls
+    const a = []
+    const newArray = []
+    for (let i = 0; i < results.length; i++) {
+        if (a.includes(results[i].event_id)) continue;
+        a.push(results[i].event_id)
+        newArray.push(results[i])
+    }
+    res.status(200).json(newArray)
 })
 
 module.exports = { getRecalls, getFdaRecalls }
