@@ -16,7 +16,7 @@ function RecallProvider({ children }) {
   const [ errorFda, setErrorFda ] = useState('')
 
   useEffect(() => {
-
+/*
     const createFda = (fdas) => {
       const newFda = []
       fdas.map(fda => newFda.push(...fda.results))
@@ -69,13 +69,29 @@ function RecallProvider({ children }) {
         setErrorFda(error.message)
         console.log(error.message)
       }
-    })()
+    })()*/
     
-    
+      fetchFda()
       fetchUsda()
     
   }, []);
-  const fetchUsda = async () => {
+  const fetchFda = async () => {
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: "https://foodrecallapi.vercel.app/api/getFda",
+      headers: {}
+    };
+    try {
+      const response = await axios.request(config)
+      const data = await response.data
+      setFda(data)
+    } catch (error) {
+      setErrorFda(error.message)
+      console.log(error.message)
+    }
+  }
+   const fetchUsda = async () => {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
