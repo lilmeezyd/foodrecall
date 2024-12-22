@@ -136,6 +136,12 @@ function UsdaChartView() {
     const data2 = useMemo(() => returnRiskData(recalls, year1, year2), [recalls, year1, year2])
     const data3 = useMemo(() => returnStateData(recalls, year1, year2), [recalls, year1, year2])
     const data4 = useMemo(() => returnRecallType(recalls, year1, year2), [recalls, year1, year2])
+    const minWidth = 300
+    const width = data.length * 100 < minWidth ? minWidth : data.length * 100
+    const width1 = data1.length * 100 < minWidth ? minWidth : data1.length * 100
+    const width2 = data2.length * 100 < minWidth ? minWidth : data2.length * 100
+    const width3 = data3.length * 100 < minWidth ? minWidth : data3.length * 100
+    const width4 = data4.length * 100 < minWidth ? minWidth : data4.length * 100
 
     return (
         <>
@@ -144,8 +150,14 @@ function UsdaChartView() {
             {recalls.length > 0 && <>
                 <div className="chart">
                     <div className='chart-heading'>Number of recalls per year since 2010</div>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart width={500} height={400} data={data1}
+                    {/*<ResponsiveContainer width="100%" height="100%">*/}
+                    <div className="graph-wrapper"
+                        onScroll={(e) => {
+                            let axis = document.querySelector(".recharts-yAxis");
+                            axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
+                            //For Left Orientation
+                        }}>
+                        <BarChart width={width1} height={300} data={data1}
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
@@ -154,7 +166,8 @@ function UsdaChartView() {
                             <Legend />
                             <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
                         </BarChart>
-                    </ResponsiveContainer>
+                    </div>
+                    {/*</ResponsiveContainer>*/}
                 </div>
                 <div className='jump'>
                     <label htmlFor="jump">Range of years:</label>
@@ -179,8 +192,14 @@ function UsdaChartView() {
                 <div className='chart'>
                     <div className='chart-heading'>Reasons for recalls and corresponding numbers</div>
 
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart width={500} height={400} data={data}
+                    {/*<ResponsiveContainer width="100%" height="100%">*/}
+                    <div className="graph-wrapper"
+                        onScroll={(e) => {
+                            let axis = document.querySelector(".recharts-yAxis");
+                            axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
+                            //For Left Orientation
+                        }}>
+                        <BarChart width={width} height={300} data={data}
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
@@ -189,12 +208,19 @@ function UsdaChartView() {
                             <Legend />
                             <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
                         </BarChart>
-                    </ResponsiveContainer>
+                        </div>
+                    {/*</ResponsiveContainer>*/}
                 </div>
                 <div className="chart">
                     <div className='chart-heading'>Risk levels for recalls and corresponding numbers</div>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart width={500} height={400} data={data2}
+                    {/*<ResponsiveContainer width="100%" height="100%">*/}
+                    <div className="graph-wrapper"
+                        onScroll={(e) => {
+                            let axis = document.querySelector(".recharts-yAxis");
+                            axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
+                            //For Left Orientation
+                        }}>
+                        <BarChart width={width2} height={300} data={data2}
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
@@ -203,13 +229,20 @@ function UsdaChartView() {
                             <Legend />
                             <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
                         </BarChart>
-                    </ResponsiveContainer>
+                        </div>
+                    {/*</ResponsiveContainer>*/}
                 </div>
 
                 <div className="chart">
                     <div className='chart-heading'>Status of recalls and the corresponding numbers</div>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart width={500} height={400} data={data4}
+                    {/*<ResponsiveContainer width="100%" height="100%">*/}
+                    <div className="graph-wrapper"
+                        onScroll={(e) => {
+                            let axis = document.querySelector(".recharts-yAxis");
+                            axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
+                            //For Left Orientation
+                        }}>
+                        <BarChart width={width4} height={300} data={data4}
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
@@ -218,13 +251,20 @@ function UsdaChartView() {
                             <Legend />
                             <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
                         </BarChart>
-                    </ResponsiveContainer>
+                        </div>
+                    {/*</ResponsiveContainer>*/}
                 </div>
 
                 <div className="chart">
                     <div className='chart-heading'>Number of recalls for each state</div>
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart width={500} height={400} data={data3}
+                    {/*<ResponsiveContainer width="100%" height="100%">*/}
+                    <div className="graph-wrapper"
+                        onScroll={(e) => {
+                            let axis = document.querySelector(".recharts-yAxis");
+                            axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
+                            //For Left Orientation
+                        }}>
+                        <BarChart width={width3} height={300} data={data3}
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
@@ -233,7 +273,8 @@ function UsdaChartView() {
                             <Legend />
                             <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
                         </BarChart>
-                    </ResponsiveContainer>
+                        </div>
+                    {/*</ResponsiveContainer>*/}
                 </div>
             </>}
 

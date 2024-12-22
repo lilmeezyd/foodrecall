@@ -287,9 +287,8 @@ li {
 }
 
 .chart {
-  height: 300px;
   padding: 10px;
-  margin: 25px 0;
+  margin: 50px 0;
 }
 
 .chart-heading {
@@ -434,6 +433,7 @@ input[type='checkbox'] {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 75px;
 }
 
 .jump select {
@@ -551,6 +551,12 @@ label {
   background: #c4dec43d;
   border-radius: 5px;
   padding: 5px;
+}
+
+.graph-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .foot-note {
