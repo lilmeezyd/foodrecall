@@ -45,7 +45,7 @@ li {
 }
 
 .header .main-menu {
-  display:  flex;
+  display: flex;
   align-items: center;
   justify-content: space-between;
 }
@@ -71,7 +71,7 @@ li {
 
 .header ul li a:hover,
 .header ul li a:active {
-  background: #c4dec4;
+  background: aqua;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   color: #777;
@@ -88,7 +88,7 @@ li {
   z-index: 3;
 }
 
-.header ul.main-menu li ul.recalls  li {
+.header ul.main-menu li ul.recalls li {
   width: 100%;
   margin: 0;
 }
@@ -102,7 +102,7 @@ li {
 }
 
 .burger-housing:hover {
-  background: #c4dec4;
+  /* background: #c4dec4;*/
 }
 
 .burger-container {
@@ -156,16 +156,18 @@ li {
     z-index: -1;
     opacity: 0;
   }
+
   100% {
     z-index: 2;
     opacity: 1;
   }
 }
 
-@keyframes growDown{
+@keyframes growDown {
   0% {
     transform: translateY(-200px);
   }
+
   100% {
     transform: translateY(0px);
   }
@@ -183,6 +185,9 @@ li {
   gap: 20px;
   margin-bottom: 10px;
   padding-top: 20px;
+  padding-right: 5px;
+  padding-left: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /*Home */
@@ -194,7 +199,7 @@ li {
   background-size: cover;
   color: black;
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
   padding-right: 10px;
@@ -203,8 +208,8 @@ li {
 }
 
 .home-image-heading {
-    font-size: 2rem;
-    font-weight: 700;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
 .home-image-sub {
@@ -218,13 +223,13 @@ li {
   padding: 30px 0;
 }
 
-.latest-recalls > .recall-list {
+.latest-recalls>.recall-list {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: baseline;
   padding: 5px;
-  gap: 10px;  
+  gap: 10px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -233,11 +238,11 @@ li {
   -webkit-backdrop-filter: blur(5px);
 }
 
-.latest-recalls > .recall-list:hover {
+.latest-recalls>.recall-list:hover {
   /*box-shadow: #c4dec4 0 0 0px 2px;*/
 }
 
-.latest-recalls > .recall-list > .home-field-title{
+.latest-recalls>.recall-list>.home-field-title {
   text-align: left;
   font-weight: 600;
   width: auto;
@@ -253,7 +258,7 @@ li {
   margin-top: 10px;
   border-radius: 5px;
   width: 100%;
-  background: #c4dec4;
+  background: aqua;
   font-weight: 600;
 }
 
@@ -279,7 +284,8 @@ li {
   margin: auto;
 }
 
-.list-view, .chart-view {
+.list-view,
+.chart-view {
   flex: 1 1;
   text-align: center;
   padding: 5px 0;
@@ -356,7 +362,7 @@ input[type='checkbox'] {
 }
 
 
-.options-group div:nth-of-type(2){
+.options-group div:nth-of-type(2) {
   padding: 0 10px;
 }
 
@@ -402,7 +408,11 @@ input[type='checkbox'] {
   text-align: left;
   font-size: 1rem;
   padding: 5px;
-  border-bottom: 1px solid #aaa;
+  /*border-bottom: 1px solid #aaa;*/
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid aqua;
+  border-radius: 5px;
+  backdrop-filter: blur(5px);
 }
 
 .company {
@@ -427,7 +437,8 @@ input[type='checkbox'] {
   padding: 5px;
 }
 
-.recall-states, .recall-cause {
+.recall-states,
+.recall-cause {
   text-align: left;
   word-wrap: anywhere;
 }
@@ -436,6 +447,7 @@ input[type='checkbox'] {
 .not-found {
   padding: 10px;
 }
+
 .jump {
   display: flex;
   justify-content: center;
@@ -455,7 +467,9 @@ input[type='checkbox'] {
   justify-content: center;
   margin: 8px 0;
 }
-.button-controls img, .prev_next img {
+
+.button-controls img,
+.prev_next img {
   width: 25px;
 }
 
@@ -487,6 +501,7 @@ input[type='checkbox'] {
   padding: 0.2rem;
   color: rgba(22, 22, 68, 1.0);
 }
+
 .pages .current {
   font-weight: 700;
 }
@@ -571,11 +586,12 @@ label {
 }
 
 .footer {
-  background: #c4dec4;
+  background: aqua;
   padding: 10px;
   font-size: 0.8rem;
   font-weight: 600;
   text-align: center;
+  margin-bottom: 0;
 }
 
 .recall-extend {
@@ -620,6 +636,7 @@ label {
   font-weight: 700;
   padding: 20px;
 }
+
 .unknown-msg {
   font-size: 1.2rem;
   font-weight: 500;
@@ -640,6 +657,7 @@ label {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -664,7 +682,9 @@ label {
     display: block;
     border: 1px solid #777;
   }
-  .button-controls img, .prev_next img {
+
+  .button-controls img,
+  .prev_next img {
     width: 15px;
   }
 
