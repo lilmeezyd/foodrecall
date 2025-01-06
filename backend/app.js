@@ -12,6 +12,7 @@ const moment = require("moment-timezone");
 const timezone = "Africa/Kampala";
 const sendEmail = require("./utils/sendEmail");
 const Recall = require("./models/recallModel");
+const Fda = require('./models/fdaModel')
 const User = require("./models/userModel");
 
 connectDB();
@@ -34,7 +35,7 @@ app.use('/api/getFda', require("./routes/getFdaRoutes"))
 
 // Check for new recalls from the fda website
 cron.schedule(
-  "07 14 * * *",
+  "00 03 * * *",
   async (req, res) => {
     const now = moment().tz(timezone);
     const currentDate = new Date();
@@ -61,52 +62,72 @@ cron.schedule(
     )
       .split("-")
       .join("");
-    if (now.hour() === 14 && now.minute() === 7) {
+    if (now.hour() === 3 && now.minute() === 0) {
       let config = {
         method: "get",
         maxBodyLength: Infinity,
         //url: `https://api.fda.gov/food/enforcement.json?search=report_date:[20240326+TO+20240327]&limit=5`,
-        url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${yesterday}+TO+${today}]&limit=1000`,
+        url: `https://api.fda.gov/food/enforcement.json?api_key=UfWlZLSEWUUJqeY3s0Qagdt7u5vsDThx1Jb4zKSA&search=report_date:[${yesterday}+TO+${today}]&limit=1000`,
         headers: {},
       };
-      const link = `http://localhost:3000/`;
-
+      //const link = `http://localhost:3000/`;
       try {
-        const response = await axios.request(config);
-        const data = await response.data.results;
-
-        // Log recall into database
-        data.forEach(async (entry) => {
-          const recall = await Recall.create({
-            id: entry.event_id,
-            title: entry.reason_for_recall,
-            website: "FDA",
-            date: entry.report_date,
-          });
-        });
-        sendEmail(
-          "denismoini09@gmail.com",
-          "Recalls as reported by the FDA for the past 24 hours",
-          { data: data, link: link },
-          "./templates/fdaRecalls.handlebars"
-        );
-        res.status(200).json(data);
+        const a = []
+        const newArray = []
+        const response = await axios.request(config)
+        const data = await response.data
+        const { results } = data
+        for (let i = 0; i < results.length; i++) {
+          if (a.includes(results[i].event_id)) continue;
+          a.push(results[i].event_id)
+          newArray.push(results[i])
+        }
+        const fda = await Fda.findOne({})
+        for (let i = 0; i < newArray.length; i++) {
+          fda.results.push(newArray[i]);
+        }
+        await fda.save()
+        res.status(200).json(newArray)
       } catch (error) {
-        const recall = await Recall.create({
-          id: 0,
-          title: `No Recalls`,
-          website: "FDA",
-          date: `N/A`,
-        });
-        sendEmail(
-          "denismoini09@gmail.com",
-          "Recalls as reported by the FDA for the past 24 hours",
-          { data: "No Recalls Today!", link: link },
-          "./templates/noRecalls.handlebars"
-        );
-        console.log(error.response.status);
-        console.log(error.response.statusText);
+        console.log(error)
       }
+      /*
+            try {
+              const response = await axios.request(config);
+              const data = await response.data.results;
+      
+              // Log recall into database
+              data.forEach(async (entry) => {
+                const recall = await Recall.create({
+                  id: entry.event_id,
+                  title: entry.reason_for_recall,
+                  website: "FDA",
+                  date: entry.report_date,
+                });
+              });
+              sendEmail(
+                "denismoini09@gmail.com",
+                "Recalls as reported by the FDA for the past 24 hours",
+                { data: data, link: link },
+                "./templates/fdaRecalls.handlebars"
+              );
+              res.status(200).json(data);
+            } catch (error) {
+              const recall = await Recall.create({
+                id: 0,
+                title: `No Recalls`,
+                website: "FDA",
+                date: `N/A`,
+              });
+              sendEmail(
+                "denismoini09@gmail.com",
+                "Recalls as reported by the FDA for the past 24 hours",
+                { data: "No Recalls Today!", link: link },
+                "./templates/noRecalls.handlebars"
+              );
+              console.log(error.response.status);
+              console.log(error.response.statusText);
+            }*/
     }
   },
   {
