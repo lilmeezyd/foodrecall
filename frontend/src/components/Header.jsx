@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../AuthenticationContext'
-import chevronDown from '../static/chevron-down.svg'
-import chevronUp from '../static/chevron-up.svg'
 
 function Header() {
 
@@ -36,18 +34,26 @@ function Header() {
       //}
     })
     
+    const onSubscribe = () => {
+        console.log('Thanks for subscribing')
+    }
 
     const onToggle = () => {
         setViewMobile(prevState => !prevState)
+        console.log('toggled view!')
     }
     return (
         <header className='header'>
             <div className="logo">
                 <Link to="/">FRA</Link>
             </div>
+            <div className='header-div'>
+                <button className='btn'><Link onClick={() => {
+                    console.log('Thanks for subscribing')
+                    setViewMobile(false)}} to='/subscribe'>Subscribe</Link></button>
             <ul className="main-menu">
-            <li><Link to='/recalls/fda'>FDA</Link></li>
-            <li><Link to='/recalls/usda'>USDA</Link></li>
+            <li><Link onClick={() => {setViewMobile(false)}} to='/recalls/fda'>FDA</Link></li>
+            <li><Link onClick={() => {setViewMobile(false)}} to='/recalls/usda'>USDA</Link></li>
                 <li>
                     {/*<Link onClick={() => setDropDown(!dropDown)}>Recalls
                         {dropDown ? <img src={chevronUp} alt="chevron-up" /> : <img src={chevronDown} alt="chevron-down" />}</Link>*/}
@@ -77,6 +83,7 @@ function Header() {
                     Hi, {user?.profile?.firstName}
                 </li>*/}
             </ul>
+            </div>
             <div onClick={onToggle} className="burger-housing">
                 <div className="burger-container">
                     <div className="burger-line"></div>
@@ -85,53 +92,14 @@ function Header() {
                 </div>
             </div>
 
-            {viewMobile && <ul ref={menuRef} className="mobile-menu">
+            {viewMobile &&   <div className='header-div-mobile'>
+                <button className='btn'><Link onClick={() => {
+                    console.log('Thanks for subscribing')
+                    setViewMobile(false)}} to='/subscribe'>Subscribe</Link></button>
+            <ul ref={menuRef} className="mobile-menu">
             <li><Link onClick={() => {setViewMobile(false)}} to='/recalls/fda'>FDA</Link></li>
             <li><Link onClick={() => {setViewMobile(false)}} to='/recalls/usda'>USDA</Link></li>
-                {/*<li>
-                    <Link onClick={() => setDropDown(!dropDown)}>Recalls
-                        {dropDown ? <img src={chevronUp} alt="chevron-up" /> : <img src={chevronDown} alt="chevron-down" />}</Link>
-                    {dropDown && <ul className='recalls'>
-                        <li><Link onClick={() => {
-                            setViewMobile(false)
-                            setDropDown(false)
-                        }} to='/recalls/fda'>FDA</Link></li>
-                        <li><Link onClick={() => {
-                            setViewMobile(false)
-                            setDropDown(false)
-                        }} to='/recalls/usda'>USDA</Link></li>
-                    </ul>}
-                </li>*/}
-                {/*!!user?.user && <li>
-                    <Link onClick={() => {
-                        setViewMobile(false)
-                        setDropDown(false)
-                    }} to='/profile'>Profile</Link>
-                </li>*/}
-
-                {/*!user?.user && <li>
-                    <Link to='/login' onClick={() => {
-                        setViewMobile(false)
-                        setDropDown(false)
-                    }}>Login</Link>
-                </li>*/}
-                {/*!user?.user && <li>
-                    <Link onClick={() => {
-                        setViewMobile(false)
-                        setDropDown(false)
-                    }} to='/register'>Register</Link>
-                </li>*/}
-                {/*!!user?.user && <li>
-                    Hi, {user?.profile?.firstName}
-                </li>*/}
-                {/*!!user?.user && <li>
-                    <Link to='/' onClick={() => {
-                        setViewMobile(false)
-                        setDropDown(false)
-                        user.logout()
-                    }}>Log Out</Link>
-                </li>*/}
-            </ul>}
+            </ul></div>}
 
         </header>
     )

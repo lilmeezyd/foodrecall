@@ -145,8 +145,9 @@ function UsdaChartView() {
 
     return (
         <>
-            {errorFsis === 'Network Error' && <div>Check your internet connection!</div>}
-            {recalls.length === 0 && errorFsis === '' && <div className='spinner'></div>}
+            {errorFsis === 'Network Error' ? <div>Check your internet connection!</div> :
+            <div>
+                {recalls.length === 0 && errorFsis === '' && <div className='spinner'></div>}
             {recalls.length > 0 && <>
                 <div className="chart">
                     <div className='chart-heading'>Number of recalls per year since 2010</div>
@@ -189,6 +190,7 @@ function UsdaChartView() {
                         ))
                     }</select>
                 </div>
+
                 <div className='chart'>
                     <div className='chart-heading'>Reasons for recalls and corresponding numbers</div>
 
@@ -208,52 +210,55 @@ function UsdaChartView() {
                             <Legend />
                             <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
                         </BarChart>
-                        </div>
+                    </div>
                     {/*</ResponsiveContainer>*/}
                 </div>
-                <div className="chart">
-                    <div className='chart-heading'>Risk levels for recalls and corresponding numbers</div>
-                    {/*<ResponsiveContainer width="100%" height="100%">*/}
-                    <div className="graph-wrapper"
-                        onScroll={(e) => {
-                            let axis = document.querySelector(".recharts-yAxis");
-                            axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
-                            //For Left Orientation
-                        }}>
-                        <BarChart width={width2} height={300} data={data2}
-                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
-                        </BarChart>
+                <div className='chart-ab'>
+                    <div className="chart">
+                        <div className='chart-heading'>Risk levels for recalls and corresponding numbers</div>
+                        {/*<ResponsiveContainer width="100%" height="100%">*/}
+                        <div className="graph-wrapper"
+                            onScroll={(e) => {
+                                let axis = document.querySelector(".recharts-yAxis");
+                                axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
+                                //For Left Orientation
+                            }}>
+                            <BarChart width={width2} height={300} data={data2}
+                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
+                            </BarChart>
                         </div>
-                    {/*</ResponsiveContainer>*/}
+                        {/*</ResponsiveContainer>*/}
+                    </div>
+
+                    <div className="chart">
+                        <div className='chart-heading'>Status of recalls and the corresponding numbers</div>
+                        {/*<ResponsiveContainer width="100%" height="100%">*/}
+                        <div className="graph-wrapper"
+                            onScroll={(e) => {
+                                let axis = document.querySelector(".recharts-yAxis");
+                                axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
+                                //For Left Orientation
+                            }}>
+                            <BarChart width={width4} height={300} data={data4}
+                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
+                            </BarChart>
+                        </div>
+                        {/*</ResponsiveContainer>*/}
+                    </div>
                 </div>
 
-                <div className="chart">
-                    <div className='chart-heading'>Status of recalls and the corresponding numbers</div>
-                    {/*<ResponsiveContainer width="100%" height="100%">*/}
-                    <div className="graph-wrapper"
-                        onScroll={(e) => {
-                            let axis = document.querySelector(".recharts-yAxis");
-                            axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
-                            //For Left Orientation
-                        }}>
-                        <BarChart width={width4} height={300} data={data4}
-                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
-                        </BarChart>
-                        </div>
-                    {/*</ResponsiveContainer>*/}
-                </div>
 
                 <div className="chart">
                     <div className='chart-heading'>Number of recalls for each state</div>
@@ -273,12 +278,13 @@ function UsdaChartView() {
                             <Legend />
                             <Bar dataKey="recalls" fill='black' activeBar={<Rectangle fill='gold' stroke='purple' />} />
                         </BarChart>
-                        </div>
+                    </div>
                     {/*</ResponsiveContainer>*/}
                 </div>
             </>}
 
-            <p className="foot-note">*Data retrieved from the fsis website</p>
+            <p className="foot-note">*Data retrieved from the fsis website</p></div>}
+            
         </>
     )
 }

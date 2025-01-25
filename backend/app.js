@@ -31,7 +31,7 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/fda", require("./routes/fdaRoutes"));
 // Check for new recalls from the usda website
 app.use("/api/usda", require("./routes/usdaRoutes"));
-app.use('/api/getFda', require("./routes/getFdaRoutes"))
+app.use('/api/getFda', require("./routes/getFdaRoutes")) 
 
 // Check for new recalls from the fda website
 cron.schedule(

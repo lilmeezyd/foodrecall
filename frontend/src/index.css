@@ -15,10 +15,11 @@ a {
 
 ul {
   list-style: none;
+  padding-inline-start: 0;
 }
 
 li {
-  line-height: 2.2;
+  line-height: normal;
 }
 
 .container {
@@ -44,25 +45,36 @@ li {
   font-weight: 600;
 }
 
-.header .main-menu {
+.header .header-div {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+ul.main-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-inline-start: 10px;
+}
 
-.header ul.main-menu li {
+ul.mobile-menu {
+  margin-block-end: 0.5rem;
+  margin-block-start: 0.5rem;
+}
+
+.header .header-div ul.main-menu li {
   margin: 0 2px;
   position: relative;
 }
 
-.header ul.mobile-menu li a,
-.header ul.main-menu li a {
+.header .header-div-mobile ul.mobile-menu li a,
+.header .header-div ul.main-menu li a {
   padding: 5px 10px;
 }
 
-.header ul.main-menu li a,
-.header ul.mobile-menu li a {
+.header .header-div ul.main-menu li a,
+.header .header-div-mobile ul.mobile-menu li a {
   justify-content: center;
   align-items: center;
   display: flex;
@@ -76,6 +88,11 @@ li {
   border-top-right-radius: 5px;
   color: #777;
   transition: ease-in 500ms all;
+}
+.header-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .main-menu .recalls {
@@ -95,7 +112,7 @@ li {
 
 
 .burger-housing {
-  padding: 7px 21px;
+  padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
   display: none;
@@ -116,33 +133,37 @@ li {
 .burger-line-2 {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
   width: 28px;
-  height: 5px;
+  height: 3px;
   background: #777;
 }
 
+.burger-line {
+  transform: translate(-50%, 0);
+}
+
 .burger-line-1 {
-  transform: translateY(8px);
+  transform: translate(-50%, 8px);
 }
 
 .burger-line-2 {
-  transform: translateY(16px);
+  transform: translate(-50%, 16px);
 }
 
-.header .mobile-menu {
+.header .header-div-mobile {
   /*border: 1px solid #777;*/
   display: none;
   position: absolute;
-  flex-direction: column;
+  flex-direction: column-reverse;
   justify-content: center;
-  padding: 0;
+  padding: 5px;
   margin-top: 2.5rem;
   background: #ffff;
   z-index: 2;
   right: 20px;
   top: 37px;
-  width: 200px;
+  width: 150px;
   box-shadow: #e8e2e2 0px 0px 2px 2px;
   animation-name: appear, growDown;
   animation-duration: 300ms, 400ms;
@@ -204,6 +225,7 @@ li {
   justify-content: flex-end;
   padding-right: 10px;
   padding-bottom: 10px;
+  margin-bottom: 10px;
   gap: 10px;
 }
 
@@ -255,11 +277,15 @@ li {
   border: none;
   cursor: pointer;
   padding: 8px 10px;
-  margin-top: 10px;
   border-radius: 5px;
   width: 100%;
+  margin-top: 10px;
   background: aqua;
   font-weight: 600;
+}
+
+.header-div button.btn {
+  margin-top: 0;
 }
 
 .btn:hover {
@@ -302,6 +328,12 @@ li {
 .chart {
   padding: 10px;
   margin: 50px 0;
+}
+
+.chart-ab {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  overflow: auto;
 }
 
 .chart-heading {
@@ -670,11 +702,11 @@ label {
     font-size: 13px;
   }
 
-  .header .main-menu {
+  .header .header-div {
     display: none;
   }
 
-  .header .mobile-menu {
+  .header .header-div-mobile {
     display: flex;
   }
 

@@ -112,18 +112,19 @@ function FdaChartView() {
     const width4 = data4.length * 100 < minWidth ? minWidth : data4.length * 100
     return (
         <>
-            {errorFda === 'Network Error' && <div>Check your internet connection!</div>}
-            {recalls.length === 0 && errorFda === '' && <div className='spinner'></div>}
+            {errorFda === 'Network Error' ? <div>Check your internet connection!</div> :
+            <div>
+                {recalls.length === 0 && errorFda === '' && <div className='spinner'></div>}
             {recalls.length > 0 && <>
                 <div className="chart">
-                    <div className='chart-heading'>Number of recalls per year since 2018</div>
+                    <div className='chart-heading'>Number of recalls per year since 2015</div>
                     {/*<ResponsiveContainer width="100%" height="100%">*/}
                     <div className="graph-wrapper"
                         onScroll={(e) => {
                             let axis = document.querySelector(".recharts-yAxis");
                             axis.style = "transform: translateX(" + e.target.scrollLeft + "px);";
                             //For Left Orientation
-                        }}>
+                        }}> 
                         <BarChart width={width1} height={300} data={data1}
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -156,6 +157,7 @@ function FdaChartView() {
                         ))
                     }</select>
                 </div>
+                <div className='chart-ab'>
                 <div className="chart">
                     <div className='chart-heading'>Risk levels for recalls and corresponding numbers</div>
                     {/*<ResponsiveContainer width="100%" height="100%">*/}
@@ -199,6 +201,7 @@ function FdaChartView() {
                     </div>
                     {/*</ResponsiveContainer>*/}
                 </div>
+                </div>
 
                 <div className="chart">
                     <div className='chart-heading'>Number of recalls for each state</div>
@@ -222,7 +225,8 @@ function FdaChartView() {
                     {/*</ResponsiveContainer>*/}
                 </div>
             </>}
-            <p className="foot-note">*Data retrieved from the fda website</p>
+            <p className="foot-note">*Data retrieved from the fda website</p></div>}
+            
         </>
     )
 }

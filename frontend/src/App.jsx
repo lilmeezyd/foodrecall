@@ -4,19 +4,14 @@ import Fda from "./pages/Recalls/Fda";
 import Usda from "./pages/Recalls/Usda";
 import ApiProvider from "./pages/ApiProvider";
 import About from "./pages/About";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Profile from "./pages/Profile";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import UsdaRecall from "./pages/UsdaRecall";
 import FdaRecall from "./pages/FdaRecall";
-import RequestPasswordReset from "./pages/RequestPasswordReset";
-import ResetPassword from "./pages/ResetPassword";
 import Unknown from "./pages/Unknown";
 import RecallProvider from "./RecallContext";
 import AuthenticationProvider from "./AuthenticationContext";
-import PrivateRoute from "./router/PrivateRoute";
+import Subscribe from "./pages/Subscribe";
 
 function App() {
   return (
@@ -37,12 +32,12 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               </Route>
               <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
               <Route
                 path="/request-password-reset"
                 element={<RequestPasswordReset />}
               />
-              <Route path="/password-reset" element={<ResetPassword />} />*/}
+              <Route path="/password-reset" element={<ResetPassword />} />*/} 
+              <Route path="/subscribe" element={<Subscribe />} />
               <Route path="*" element={<Unknown Request/>}/>
             </Routes>
           </div>

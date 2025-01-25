@@ -10,7 +10,7 @@ const getRecalls = asyncHandler(async (req, res) => {
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: "https://api.fda.gov/food/enforcement.json?api_key=UfWlZLSEWUUJqeY3s0Qagdt7u5vsDThx1Jb4zKSA&search=report_date:[20230801+TO+20231231]&limit=1000",
+        url: "https://api.fda.gov/food/enforcement.json?api_key=UfWlZLSEWUUJqeY3s0Qagdt7u5vsDThx1Jb4zKSA&search=report_date:[20241211+TO+20250107]&limit=1000",
         headers: {}
     }
 
