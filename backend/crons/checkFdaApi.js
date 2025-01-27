@@ -36,10 +36,10 @@ const checkFdaApi = asyncHandler(async (req, res) => {
           newArray.push(results[i])
         }
         const fda = await Fda.findOne({})
-        /*for (let i = 0; i < newArray.length; i++) {
+        for (let i = 0; i < newArray.length; i++) {
           fda.results.push(newArray[i]);
         }
-        await fda.save()*/
+        await fda.save()
       } catch (error) {
         console.log(error.status)
       }
