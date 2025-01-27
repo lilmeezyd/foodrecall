@@ -111,7 +111,7 @@ function AuthenticationProvider({ children }) {
   const register = async (firstName, lastName, email, password1, password2) => {
     const formData = { firstName, lastName, email, password1, password2 };
     try {
-      const response = await axios.post("http://localhost:8000/api/users", formData);
+      const response = await axios.post("https://foodrecallapi.vercel.app/api/users", formData);
       const data = await response.data;
       const { email, token, msg, firstName, lastName } = data;
       setUser({ email, token, firstName, lastName });
@@ -131,7 +131,7 @@ function AuthenticationProvider({ children }) {
     const formData = { email, password };
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/users/login`,
+        `https://foodrecallapi.vercel.app/api/users/login`,
         formData
       );
       const data = await response.data;
