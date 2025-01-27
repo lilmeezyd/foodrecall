@@ -82,7 +82,7 @@ function AuthenticationProvider({ children }) {
   const subscribe = async (firstName, lastName, email) => {
     const formData = { firstName, lastName, email };
     try {
-      const response = await axios.post("/api/users/subscribe", formData);
+      const response = await axios.post("https://foodrecall.vercel.app/api/users/subscribe", formData);
       const data = await response.data;
       setMessage(data)
       toast.success(data)
@@ -96,7 +96,7 @@ function AuthenticationProvider({ children }) {
 
   const unsubscribe = async (id) => {
     try {
-      const response = await axios.delete(`api/users/unsubscribe/${id}`);
+      const response = await axios.delete(`https://foodrecall.vercel.app/api/users/unsubscribe/${id}`);
       const data = await response.data;
       setMessage(data)
       toast.success(data)
