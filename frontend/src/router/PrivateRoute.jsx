@@ -8,7 +8,6 @@ function PrivateRoute() {
     const navigate = useNavigate()
     useEffect(() => {
       if(!user?.user) return navigate('/')
-    
     })
     
     

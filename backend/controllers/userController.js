@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const Admin = require("../models/adminModel")
 const Token = require("../models/tokenModel");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
@@ -61,7 +62,7 @@ const unsubscribeUser = asyncHandler(async (req, res) => {
 //@desc Register User
 //@route POST /api/users
 //@access Public
-const registerUser = asyncHandler(async (req, res) => {
+const registerAdmin = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password1, password2 } = req.body;
   if (!firstName || !lastName || !email || !password1 || !password2) {
     res.status(400).json({ msg: "Please add all fields!" });
@@ -81,23 +82,22 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // Check if user exists
-  const userExists = await User.findOne({ email });
+  const userExists = await Admin.findOne({ email });
   if (userExists) {
-    res.status(400).json({ msg: "User already exists!" })
-    throw new Error("User already exists");
+    res.status(400).json({ msg: "Admin already exists!" })
+    throw new Error("Admin already exists");
   }
 
   // Hash password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password1, salt);
 
-  // Create User
-  const user = await User.create({
+  // Create Admin
+  const user = await Admin.create({
     firstName,
     lastName,
     email,
-    password: hashedPassword,
-    notifications: { fda: false, usda: false }
+    password: hashedPassword
   });
 
   if (user) {
@@ -106,11 +106,11 @@ const registerUser = asyncHandler(async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      notifications: { fda: false, usda: false },
       token: generateToken(user._id),
+      msg: 'successfully registered'
     });
   } else {
-    res.status(400).json({ msg: "Invalid user data!" });
+    res.status(400).json("Invalid user data!" );
     throw new Error("Invalid user data");
   }
 });
@@ -120,10 +120,10 @@ const registerUser = asyncHandler(async (req, res) => {
 //@access Public
 const requestPasswordReset = asyncHandler(async (req, res) => {
   const { email } = req.body;
-  const user = await User.findOne({ email });
+  const user = await Admin.findOne({ email });
   if (!user) {
-    res.status(400).json({ msg: "User does not exist!" })
-    throw new Error("User does not exist");
+    res.status(400).json({ msg: "Admin does not exist!" })
+    throw new Error("Admin does not exist");
   }
 
   let token = await Token.findOne({ userId: user._id });
@@ -141,14 +141,15 @@ const requestPasswordReset = asyncHandler(async (req, res) => {
     createdAt: Date.now(),
   });
 
-  const link = `http://localhost:3001/password-reset?token=${resetToken}&id=${user._id}`;
-  sendEmail(
-    user.email,
-    "Password Reset Request",
-    { name: user.firstName, link: link },
-    "./templates/requestReset.handlebars"
-  );
-  return link;
+  const link = `https://foodrecall.vercel.app/password-reset?token=${resetToken}&id=${user._id}`;
+  const welcomeSubject = `Password reset!`;
+  const welcomeContent = `<div>
+      <h1>Hi, ${firstName}</h1>
+      <p>You requested for a password reset!</p>
+      <div>Follow the link <a href=${link}>here</a></div>
+      </div>`;
+  sendNewsletter(email, welcomeSubject, welcomeContent)
+  res.status(200).json('Password reset instructions sent to your email.');
 })
 
 //@desc Password restting
@@ -171,12 +172,12 @@ const resetPassword = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(password, salt)
 
-  await User.updateOne(
+  await Admin.updateOne(
     { _id: userId },
     { $set: { password: hashedPassword } },
     { new: true }
   );
-  const user = await User.findById({ _id: userId });
+  const user = await Admin.findById({ _id: userId });
   sendEmail(
     user.email,
     "Password Reset Successfully",
@@ -190,12 +191,12 @@ const resetPassword = asyncHandler(async (req, res) => {
   return true;
 });
 
-//@desc Authenticate User
+//@desc Authenticate Admin
 //@route POST /api/users/login
 //@access Public
-const loginUser = asyncHandler(async (req, res) => {
+const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const user = await Admin.findOne({ email });
 
   if (!user && !password) {
     res.status(400).json({ msg: "Enter all fields!" })
@@ -203,8 +204,8 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   if (!user) {
-    res.status(400).json({ msg: "User not registered!" })
-    throw new Error("User not registered!")
+    res.status(400).json({ msg: "Admin not registered!" })
+    throw new Error("Admin not registered!")
   }
 
   if (user && (await bcrypt.compare(password, user.password))) {
@@ -213,7 +214,7 @@ const loginUser = asyncHandler(async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      notifications: { fda: false, usda: false },
+      msg: 'successfully logged in',
       token: generateToken(user._id),
     });
   } else {
@@ -227,7 +228,7 @@ const loginUser = asyncHandler(async (req, res) => {
 //@access Private
 const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword, confirmPassword } = req.body
-  const user = await User.findById(req.user._id)
+  const user = await Admin.findById(req.user._id)
   const { password } = user
   if (!oldPassword || !newPassword || !confirmPassword) {
     res.status(400).json({ msg: 'Please enter all fields!' })
@@ -256,7 +257,7 @@ const changePassword = asyncHandler(async (req, res) => {
     //hash password
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(newPassword, salt)
-    await User.updateOne(
+    await Admin.updateOne(
       { _id: req.user._id },
       { $set: { password: hashedPassword } },
       { new: true }
@@ -338,10 +339,10 @@ const generateToken = (id, roles) => {
 };
 
 module.exports = {
-  registerUser,
+  registerAdmin,
   createUser,
   unsubscribeUser,
-  loginUser,
+  loginAdmin,
   requestPasswordReset,
   resetPassword,
   changePassword,

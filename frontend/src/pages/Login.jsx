@@ -49,7 +49,7 @@ function Login() {
         </div>
       </form>
       <p><Link to="/request-password-reset">Forgot Password </Link> </p>
-      <p>Don't have an account <Link to='/register'>Register</Link></p>
+      {/*<p>Don't have an account <Link to='/register'>Register</Link></p>*/}
     </div>
   )
 }

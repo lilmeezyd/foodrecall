@@ -113,15 +113,17 @@ function AuthenticationProvider({ children }) {
     try {
       const response = await axios.post("http://localhost:8000/api/users", formData);
       const data = await response.data;
-      const { email, token } = data;
-      setUser({ email, token });
+      const { email, token, msg, firstName, lastName } = data;
+      setUser({ email, token, firstName, lastName });
       setToken(token);
       localStorage.setItem("token", JSON.stringify(token));
       localStorage.setItem("user", JSON.stringify({ email, token }));
+      toast.success(msg)
       navigate("/");
     } catch (error) {
-      let errorMsg = error?.response?.data?.msg || error?.message
+      let errorMsg = error?.response?.data || error?.message
       setMessage(errorMsg)
+      toast.error(errorMsg)
     }
   };
 
@@ -134,15 +136,16 @@ function AuthenticationProvider({ children }) {
       );
       const data = await response.data;
       console.log(data);
-      const { email, token } = data;
-      setUser({ email, token });
+      const { email, token, msg, firstName, lastName } = data;
+      setUser({ email, token, firstName, lastName });
       setToken(token);
       localStorage.setItem("token", JSON.stringify(token));
       localStorage.setItem("user", JSON.stringify({ email, token }));
       navigate("/");
     } catch (error) {
-      let errorMsg = error?.response?.data?.msg || error?.message
+      let errorMsg = error?.response?.data || error?.message
       setMessage(errorMsg)
+      toast.error(errorMsg)
     }
   };
 

@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const {
-  registerUser,
+  registerAdmin,
   createUser,
   unsubscribeUser,
   requestPasswordReset,
   resetPassword,
   changePassword,
-  loginUser,
+  loginAdmin,
   getMe,
   changeNotifications,
   updateDetails
@@ -16,8 +16,8 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.post('/subscribe', createUser);
 router.delete('/unsubscribe/:id', unsubscribeUser);
-router.post("/", registerUser);
-router.post("/login", loginUser);
+router.post("/", registerAdmin);
+router.post("/login", loginAdmin);
 router.post("/requestResetPassword", requestPasswordReset)
 router.post("/resetPassword", resetPassword)
 router.put("/newPassword", protect, changePassword)

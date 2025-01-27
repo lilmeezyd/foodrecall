@@ -12,26 +12,6 @@ function Header() {
     //let recallRef = useRef()
 
     useEffect(() => {
-     /* let handler = (e) => {
-        if(viewMobile && !menuRef.current.contains(e.target)) {
-            console.log(menuRef.current)
-            setViewMobile(false)
-        }
-      }*/
-/*
-      let handler1 = (e) => {
-        if(dropDown && !recallRef.current.contains(e.target)) {
-            //setDropDown(false)
-        }
-      }
-*/
-      //document.addEventListener("mousedown", handler)
-      //document.addEventListener("mousedown", handler1)
-    
-      //return () => {
-        //document.removeEventListener("mousedown", handler)
-        //document.removeEventListener("mousedown1", handler1)
-      //}
     })
     
     const onSubscribe = () => {
@@ -40,7 +20,6 @@ function Header() {
 
     const onToggle = () => {
         setViewMobile(prevState => !prevState)
-        console.log('toggled view!')
     }
     return (
         <header className='header'>
@@ -48,12 +27,22 @@ function Header() {
                 <Link to="/">FRA</Link>
             </div>
             <div className='header-div'>
-                <button className='btn'><Link onClick={() => {
-                    console.log('Thanks for subscribing')
-                    setViewMobile(false)}} to='/subscribe'>Subscribe</Link></button>
             <ul className="main-menu">
             <li><Link onClick={() => {setViewMobile(false)}} to='/recalls/fda'>FDA</Link></li>
             <li><Link onClick={() => {setViewMobile(false)}} to='/recalls/usda'>USDA</Link></li>
+            {!!user?.user ? <>
+            <li>
+                <Link onClick={() => {setViewMobile(false)}} to='/send-updates'>Updates</Link>
+            </li>
+                <li>
+                    Hi, {user?.user?.firstName}
+                </li><li>
+                    <Link to='/' onClick={() => {
+                        setDropDown(false)
+                        user.logout()
+                    }}>Log Out</Link>
+                </li></> : <button className='btn'><Link onClick={() => {
+                    setViewMobile(false)}} to='/subscribe'>Subscribe</Link></button>}
                 <li>
                     {/*<Link onClick={() => setDropDown(!dropDown)}>Recalls
                         {dropDown ? <img src={chevronUp} alt="chevron-up" /> : <img src={chevronDown} alt="chevron-down" />}</Link>*/}
@@ -73,15 +62,6 @@ function Header() {
                 {/*!user?.user && <li>
                     <Link onClick={() => setDropDown(false)} to='/register'>Register</Link>
                 </li>*/}
-                {/*!!user?.user && <li>
-                    <Link to='/' onClick={() => {
-                        setDropDown(false)
-                        user.logout()
-                    }}>Log Out</Link>
-                </li>*/}
-                {/*!!user?.user && <li>
-                    Hi, {user?.profile?.firstName}
-                </li>*/}
             </ul>
             </div>
             <div onClick={onToggle} className="burger-housing">
@@ -93,9 +73,21 @@ function Header() {
             </div>
 
             {viewMobile &&   <div className='header-div-mobile'>
-                <button className='btn'><Link onClick={() => {
-                    console.log('Thanks for subscribing')
-                    setViewMobile(false)}} to='/subscribe'>Subscribe</Link></button>
+                {!!user?.user ? <>
+                <div>
+                    <Link to='/' onClick={() => {
+                        setViewMobile(false)
+                        setDropDown(false)
+                        user.logout()
+                    }}>Log Out</Link>
+                </div>
+                <div>
+                    Hi, {user?.user?.firstName}
+                </div>
+                <div>
+                <Link onClick={() => {setViewMobile(false)}} to='/send-updates'>Updates</Link>
+            </div></> : <button className='btn'><Link onClick={() => {
+                    setViewMobile(false)}} to='/subscribe'>Subscribe</Link></button>}
             <ul ref={menuRef} className="mobile-menu">
             <li><Link onClick={() => {setViewMobile(false)}} to='/recalls/fda'>FDA</Link></li>
             <li><Link onClick={() => {setViewMobile(false)}} to='/recalls/usda'>USDA</Link></li>

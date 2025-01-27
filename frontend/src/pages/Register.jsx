@@ -35,7 +35,7 @@ function Register() {
   }
   return (
     <div className='form-control'>
-      <div className='login'>Register to get email notifications</div>
+      <div className='login'>Admin Registration</div>
       <form onSubmit={onSubmit}>
       {!!register.message && 
       <div className='error-msg alert'>{register.message}</div>}

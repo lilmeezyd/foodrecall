@@ -13,12 +13,18 @@ import RecallProvider from "./RecallContext";
 import AuthenticationProvider from "./AuthenticationContext";
 import Subscribe from "./pages/Subscribe";
 import Unsubscribe from "./pages/Unsubscribe";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import RequestPasswordReset from "./pages/RequestPasswordReset";
+import ResetPassword from "./pages/ResetPassword";
+import SubscribeMsg from "./pages/SubscribeMsg";
+import PrivateRoute from "./router/PrivateRoute";
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
   return (
-    <Router>
+    <Router> 
       <AuthenticationProvider>
         <RecallProvider>
           <div className="container">
@@ -32,6 +38,17 @@ function App() {
               <Route path="/recalls/usda/:usdaId" element={<UsdaRecall />} />
               <Route path="/api-provider" element={<ApiProvider />} />
               <Route path="/about-us" element={<About />} />
+              <Route element={<PrivateRoute />}>
+                <Route path="/send-updates" element={<SubscribeMsg/>} />
+              </Route>
+              
+              <Route path="/cap10denz/login" element={<Login />} />
+              <Route path="/cap10denz/register" element={<Register />} />
+              <Route
+                path="/request-password-reset"
+                element={<RequestPasswordReset />}
+              />
+              <Route path="/password-reset" element={<ResetPassword />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               <Route path="/subscribe" element={<Subscribe />} />
               <Route path="*" element={<Unknown Request />} />
