@@ -12,5 +12,11 @@
         "dest": "app.js",
         "methods": ["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
       }
+    ],
+    "crons": [
+      {
+        "path": "/crons/checkFdaApi",
+        "schedule": "35 14 * * *"
+      }
     ]
   }

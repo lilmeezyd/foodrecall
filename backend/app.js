@@ -12,6 +12,7 @@ const moment = require("moment-timezone");
 const timezone = "Africa/Kampala";
 const sendEmail = require("./utils/sendEmail");
 const Recall = require("./models/recallModel");
+const checkFdaApi = require("./crons/checkFdaApi")
 const Fda = require('./models/fdaModel')
 const User = require("./models/userModel");
 
@@ -34,6 +35,7 @@ app.use("/api/usda", require("./routes/usdaRoutes"));
 app.use('/api/getFda', require("./routes/getFdaRoutes"))
 
 // Check for new recalls from the fda website
+cron.schedule("18 22 * * *", () => checkFdaApi())
 cron.schedule(
   "15 19 * * *",
   async (req, res) => {
