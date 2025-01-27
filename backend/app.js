@@ -35,7 +35,7 @@ app.use('/api/getFda', require("./routes/getFdaRoutes"))
 
 // Check for new recalls from the fda website
 cron.schedule(
-  "00 03 * * *",
+  "24 18 * * *",
   async (req, res) => {
     const now = moment().tz(timezone);
     const currentDate = new Date();
@@ -62,12 +62,13 @@ cron.schedule(
     )
       .split("-")
       .join("");
-    if (now.hour() === 3 && now.minute() === 0) {
+    if (now.hour() === 18 && now.minute() === 24) {
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        //url: `https://api.fda.gov/food/enforcement.json?search=report_date:[20240326+TO+20240327]&limit=5`,
-        url: `https://api.fda.gov/food/enforcement.json?api_key=UfWlZLSEWUUJqeY3s0Qagdt7u5vsDThx1Jb4zKSA&search=report_date:[${yesterday}+TO+${today}]&limit=1000`,
+        url: `https://api.fda.gov/food/enforcement.json?search=report_date:[20250102+TO+20250125]&limit=1000`,
+        //url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${yesterday}+TO+${today}]&limit=1000`,
+        //url: `https://api.fda.gov/food/enforcement.json?api_key=UfWlZLSEWUUJqeY3s0Qagdt7u5vsDThx1Jb4zKSA&search=report_date:[${yesterday}+TO+${today}]&limit=1000`,
         headers: {},
       };
       //const link = `http://localhost:3000/`;
@@ -82,12 +83,12 @@ cron.schedule(
           a.push(results[i].event_id)
           newArray.push(results[i])
         }
+        console.log(newArray)
         const fda = await Fda.findOne({})
         for (let i = 0; i < newArray.length; i++) {
           fda.results.push(newArray[i]);
         }
         await fda.save()
-        res.status(200).json(newArray)
       } catch (error) {
         console.log(error)
       }

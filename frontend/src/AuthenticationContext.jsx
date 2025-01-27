@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from 'react-toastify'
 
 export const AuthenticaticationContext = createContext({
   user: null,
@@ -13,14 +14,16 @@ export const AuthenticaticationContext = createContext({
   detailMessage: "",
   errorMsg: false,
   successMsg: false,
-  reset: () => {},
-  register: () => {},
-  login: () => {},
-  logout: () => {},
-  requestPasswordReset: () => {},
-  resetPassword: () => {},
-  newPassword: () => {},
-  changeNotifications: () => {},
+  reset: () => { },
+  register: () => { },
+  subscribe: () => { },
+  unsubscribe: () => { },
+  login: () => { },
+  logout: () => { },
+  requestPasswordReset: () => { },
+  resetPassword: () => { },
+  newPassword: () => { },
+  changeNotifications: () => { },
 });
 
 function AuthenticationProvider({ children }) {
@@ -49,11 +52,11 @@ function AuthenticationProvider({ children }) {
 
   useEffect(() => {
     const getProfile = async () => {
-    const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
       try {
         const response = await axios.get(
           `http://localhost:8000/api/users/me`,
@@ -76,20 +79,49 @@ function AuthenticationProvider({ children }) {
     };
   }, [token]);
 
+  const subscribe = async (firstName, lastName, email) => {
+    const formData = { firstName, lastName, email };
+    try {
+      const response = await axios.post("/api/users/subscribe", formData);
+      const data = await response.data;
+      setMessage(data)
+      toast.success(data)
+      navigate("/");
+    } catch (error) {
+      let errorMsg = error?.response?.data || error?.message
+      toast.error(errorMsg)
+      setMessage(errorMsg)
+    }
+  }
+
+  const unsubscribe = async (id) => {
+    try {
+      const response = await axios.delete(`api/users/unsubscribe/${id}`);
+      const data = await response.data;
+      setMessage(data)
+      toast.success(data)
+      navigate("/");
+    } catch (error) {
+      let errorMsg = error?.response?.data || error?.message
+      setMessage(errorMsg)
+      toast.error(errorMsg)
+    }
+  }
+
   const register = async (firstName, lastName, email, password1, password2) => {
     const formData = { firstName, lastName, email, password1, password2 };
     try {
-      const response = await axios.post("http://localhost:8000/api/users",  formData);
+      const response = await axios.post("http://localhost:8000/api/users", formData);
       const data = await response.data;
-        const { email, token } = data;
-        setUser({ email, token });
-        setToken(token);
-        localStorage.setItem("token", JSON.stringify(token));
-        localStorage.setItem("user", JSON.stringify({ email, token }));
-        navigate("/");
+      const { email, token } = data;
+      setUser({ email, token });
+      setToken(token);
+      localStorage.setItem("token", JSON.stringify(token));
+      localStorage.setItem("user", JSON.stringify({ email, token }));
+      navigate("/");
     } catch (error) {
       let errorMsg = error?.response?.data?.msg || error?.message
-     setMessage(errorMsg)
+      setMessage(errorMsg)
     }
   };
 
@@ -110,7 +142,7 @@ function AuthenticationProvider({ children }) {
       navigate("/");
     } catch (error) {
       let errorMsg = error?.response?.data?.msg || error?.message
-     setMessage(errorMsg)
+      setMessage(errorMsg)
     }
   };
 
@@ -126,7 +158,7 @@ function AuthenticationProvider({ children }) {
     const formData = { email };
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/users/requestResetPassword`, formData );
+        `http://localhost:8000/api/users/requestResetPassword`, formData);
       const data = await response.data;
       console.log(data)
     } catch (error) {
@@ -141,11 +173,11 @@ function AuthenticationProvider({ children }) {
       const response = await axios.post(
         "http://localhost:8000/api/users/resetPassword", formData);
       const data = await response.data;
-        console.log(data);
-        navigate("/");
+      console.log(data);
+      navigate("/");
     } catch (error) {
       let errorMsg = error?.response?.data?.msg || error?.message
-     setMessage(errorMsg)
+      setMessage(errorMsg)
     }
   };
 
@@ -169,7 +201,7 @@ function AuthenticationProvider({ children }) {
       setSuccessMsg(true)
     } catch (error) {
       let errorMsg = error?.response?.data?.msg || error?.message
-     setPassMessage(errorMsg)
+      setPassMessage(errorMsg)
       setErrorMsg(true)
     }
   };
@@ -190,12 +222,12 @@ function AuthenticationProvider({ children }) {
       const response = await axios.put(
         "http://localhost:8000/api/users/notifications", formData, config);
       const data = await response.data;
-        console.log(data);
-        setNotMessage(data.msg)
-        setSuccessMsg(true)
+      console.log(data);
+      setNotMessage(data.msg)
+      setSuccessMsg(true)
     } catch (error) {
       let errorMsg = error?.response?.data?.msg || error?.message
-     setNotMessage(errorMsg)
+      setNotMessage(errorMsg)
       setErrorMsg(true)
     }
   };
@@ -217,12 +249,12 @@ function AuthenticationProvider({ children }) {
       const response = await axios.put(
         "http://localhost:8000/api/users/updateDetails", formData, config);
       const data = await response.data;
-        setDetailMessage(data.msg)
-        setSuccessMsg(true)
+      setDetailMessage(data.msg)
+      setSuccessMsg(true)
     } catch (error) {
       let errorMsg = error?.response?.data?.msg || error?.message
       console.log(errorMsg)
-     setDetailMessage(errorMsg)
+      setDetailMessage(errorMsg)
       setErrorMsg(true)
     }
   };
@@ -249,6 +281,8 @@ function AuthenticationProvider({ children }) {
     successMsg: successMsg,
     register,
     login,
+    subscribe,
+    unsubscribe,
     reset,
     logout,
     requestPasswordReset,
