@@ -17,7 +17,6 @@ const createUser = asyncHandler(async (req, res) => {
 
   // Check if the email already exists in the database
   const existingUser = await User.findOne({ email });
-  console.log(existingUser)
 
   if (existingUser) {
     res.status(400).json('Email already subscribed')
