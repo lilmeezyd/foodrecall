@@ -15,6 +15,7 @@ const Recall = require("./models/recallModel");
 const checkFdaApi = require("./crons/checkFdaApi")
 const Fda = require('./models/fdaModel')
 const User = require("./models/userModel");
+console.log(checkFdaApi())
 
 connectDB();
 
@@ -30,99 +31,11 @@ app.use(
 
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/fda", require("./routes/fdaRoutes"));
-// Check for new recalls from the usda website
 app.use("/api/usda", require("./routes/usdaRoutes"));
 app.use('/api/getFda', require("./routes/getFdaRoutes"))
+app.use('/api/checkFdaApi', checkFdaApi)
 
-// Check for new recalls from the fda website
-cron.schedule("18 22 * * *", () => checkFdaApi())
-cron.schedule(
-  "15 19 * * *",
-  async (req, res) => {
-    const now = moment().tz(timezone);
-    const currentDate = new Date();
 
-    // Select users to receive updates from the FDA website
-    const users = await User.find({});
-    const today = (
-      currentDate.toJSON().slice(0, 8) + currentDate.toJSON().slice(8, 10)
-    )
-      .split("-")
-      .join("");
-    Date.prototype.subtractDay = function (days) {
-      this.setTime(this.getTime() - days * 24 * 60 * 60 * 1000);
-      return this;
-    };
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `https://api.fda.gov/food/enforcement.json?search=report_date:[20250116+TO+20250126]&limit=1000`,
-      headers: {},
-    };
-    try {
-      const a = []
-      const newArray = []
-      const response = await axios.request(config)
-      const data = await response.data
-      const { results } = data
-      for (let i = 0; i < results.length; i++) {
-        if (a.includes(results[i].event_id)) continue;
-        a.push(results[i].event_id)
-        newArray.push(results[i])
-      }
-      const fda = await Fda.findOne({})
-      for (let i = 0; i < newArray.length; i++) {
-        fda.results.push(newArray[i]);
-      }
-      await fda.save()
-    } catch (error) {
-      console.log(error.status)
-    }
-    /*
-          try {
-            const response = await axios.request(config);
-            const data = await response.data.results;
-    
-            // Log recall into database
-            data.forEach(async (entry) => {
-              const recall = await Recall.create({
-                id: entry.event_id,
-                title: entry.reason_for_recall,
-                website: "FDA",
-                date: entry.report_date,
-              });
-            });
-            sendEmail(
-              "denismoini09@gmail.com",
-              "Recalls as reported by the FDA for the past 24 hours",
-              { data: data, link: link },
-              "./templates/fdaRecalls.handlebars"
-            );
-            res.status(200).json(data);
-          } catch (error) {
-            const recall = await Recall.create({
-              id: 0,
-              title: `No Recalls`,
-              website: "FDA",
-              date: `N/A`,
-            });
-            sendEmail(
-              "denismoini09@gmail.com",
-              "Recalls as reported by the FDA for the past 24 hours",
-              { data: "No Recalls Today!", link: link },
-              "./templates/noRecalls.handlebars"
-            );
-            console.log(error.response.status);
-            console.log(error.response.statusText);
-          }*/
-  }
-  ,
-  {
-    timezone,
-  }
-);
-
-// Check for new recalls from the usda website
 cron.schedule(
   "07 14 * * *",
   async (req, res) => {
