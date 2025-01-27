@@ -16,7 +16,7 @@
     "crons": [
       {
         "path": "/api/checkFdaApi",
-        "schedule": "55 14 * * *"
+        "schedule": "15 18 * * *"
       }
     ]
   }
