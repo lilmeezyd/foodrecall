@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import { useRecall } from '../RecallContext'
 
 function FdaChartView() {
-    const [yearData, setYearData] = useState({ year1: "2015", year2: "2024" })
+    const [yearData, setYearData] = useState({ year1: "2015", year2: "2025" })
 
     const { fda: recalls, errorFda } = useRecall()
 

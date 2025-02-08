@@ -34,8 +34,8 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
   
     const returnRecalls = (recalls, curPage, pageSize) => {
       const sortRecall = (x,y) => {
-        if(x.field_year>y.field_year) return -1
-        if(x.field_year<y.field_year) return 1
+        if(new Date(x.field_recall_date)>new Date(y.field_recall_date)) return -1
+        if(new Date(x.field_recall_date)<new Date(y.field_recall_date)) return 1
     }
       const filterRecall = (recall, idx) => {
         let start = (curPage - 1) * pageSize
@@ -53,7 +53,7 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
       .filter(x => x.field_states.includes(state))
       .filter(x => risk.length === 0 ? x.field_recall_classification : x.field_recall_classification === risk)
       .filter(x => status.length === 0 ? x.field_recall_type : x.field_recall_type === status)
-      .filter(x => year.length === 0 ? x.field_year : x.field_year === year)
+      .filter(x => year.length === 0 ? x.field_recall_date.split('-')[0] : x.field_recall_date.split('-')[0] === year)
       .filter(x => x.field_title.toLocaleLowerCase().includes(word.toLocaleLowerCase()))
       return newArray
     }
@@ -246,7 +246,8 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
   
     return (
       <>
-      {errorFsis === 'Network Error' && <div>Check your internet connection!</div>}
+      {errorFsis === 'Network Error' ? <div>Check your internet connection!</div>:
+      <>
       {recalls.length === 0 && errorFsis === '' && <div className='spinner'></div>}
       {recalls.length > 0  && <div className='view-recalls'>
         <div className='search-filter'>
@@ -386,7 +387,7 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
               }} className='cause' id='year'>Year
                 {dropDownYear ? <img src={chevronUp} alt="chevron-up" /> : <img src={chevronDown} alt="chevron-down" />}</div>
               {yearOpen && <div className='options'>
-                {Array.from(new Set(editedRecalls.map(x => x.field_year))).sort((x, y) => {
+                {Array.from(new Set(editedRecalls.map(x => x.field_recall_date.split('-')[0]))).sort((x, y) => {
                   if (x > y) return -1
                   return 1
                 }).map((reason, idx) => (
@@ -450,6 +451,7 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
         </>
 
       </div>}
+      </>}
       
       </>
     )

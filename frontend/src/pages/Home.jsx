@@ -7,8 +7,8 @@ function Home() {
 
   const filteredRecalls = useMemo(() => {
     const sortRecall = (x,y) => {
-      if(x.field_year>y.field_year) return -1
-      if(x.field_year<y.field_year) return 1
+      if(new Date(x.field_recall_date)>new Date(y.field_recall_date)) return -1
+      if(new Date(x.field_recall_date)<new Date(y.field_recall_date)) return 1
   }
   return recalls.sort(sortRecall).slice(0,3)
   }, [recalls])

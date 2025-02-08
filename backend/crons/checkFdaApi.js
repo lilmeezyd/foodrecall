@@ -39,17 +39,17 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         }
         const fda = await Fda.findOne({})
         for (let i = 0; i < newArray.length; i++) {
-          fda.results.push(newArray[i]);
+            fda.results.push(newArray[i]);
         }
         await fda.save()
 
         // Log recall into database
         newArray.forEach(async (entry) => {
             await Recall.create({
-              id: entry.event_id,
-              title: entry.reason_for_recall,
-              website: "FDA",
-              date: entry.report_date,
+                id: entry.event_id,
+                title: entry.reason_for_recall,
+                website: "FDA",
+                date: entry.report_date,
             });
         });
 
@@ -67,8 +67,13 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         )
         const newWelcome = welcomeContent.join(',').replace(',', '')
         sendNewsletter(emails, welcomeSubject, newWelcome)
-        res.status(200).json('Subscription successful! Check your email for a welcome email.');
+        res.status(200).json('Food recall notifications successfully sent!');
     } catch (error) {
+        const welcomeSubject = "Recalls as reported by the FDA for the past 24 hours";
+        const content = `<div>
+        <h4>There were no recalls recorded in the past 24 hours</h4>
+        </div>`
+        sendNewsletter('denismoini09@gmail.com', welcomeSubject, content)
         console.log(error.status)
     }
 })
