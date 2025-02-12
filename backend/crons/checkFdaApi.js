@@ -22,7 +22,7 @@ const checkFdaApi = asyncHandler(async (req, res) => {
     let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `https://api.fda.gov/food/enforcement.json?search=report_date:[20250123+TO+20250211]&limit=1000`,
+        url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${today}+TO+${today}]&limit=1000`,
         headers: {},
     };
 
