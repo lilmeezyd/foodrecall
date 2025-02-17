@@ -19,10 +19,16 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         this.setTime(this.getTime() - days * 24 * 60 * 60 * 1000);
         return this;
     };
+    const yesterdayDate = currentDate.subtractDay(1);
+    const yesterday = (
+      yesterdayDate.toJSON().slice(0, 8) + yesterdayDate.toJSON().slice(8, 10)
+    )
+      .split("-")
+      .join("");
     let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${today}+TO+${today}]&limit=1000`,
+        url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${yesterday}+TO+${yesterday}]&limit=1000`,
         headers: {},
     };
 
@@ -66,7 +72,7 @@ const checkFdaApi = asyncHandler(async (req, res) => {
             </div>`
         )
         const newWelcome = welcomeContent.join(',').replace(',', '')
-        sendNewsletter(emails, welcomeSubject, newWelcome)
+        sendNewsletter('denismoini09@gmail.com', welcomeSubject, newWelcome)
         res.status(200).json('Food recall notifications successfully sent!');
     } catch (error) {
         const welcomeSubject = "Recalls as reported by the FDA for the past 24 hours";
