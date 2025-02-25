@@ -2,6 +2,7 @@ const axios = require('axios')
 const Fda = require('../models/fdaModel')
 const User = require("../models/userModel");
 const Recall = require("../models/recallModel");
+const { getFdaLastDate } = require('../controllers/fdaController')
 const { sendNewsletter } = require('../utils/subscribers.js');
 const asyncHandler = require("express-async-handler");
 
@@ -9,7 +10,27 @@ const checkFdaApi = asyncHandler(async (req, res) => {
     const currentDate = new Date();
     const users = await User.find({})
     const emails = users.map(x => x.email)
-
+    const fdaRecalls = await Fda.findOne({})
+    const { results } = fdaRecalls
+    const a = []
+    const newArray = []
+    for (let i = 0; i < results.length; i++) {
+        if (a.includes(results[i].event_id)) continue;
+        a.push(results[i].event_id)
+        newArray.push(results[i])
+    }
+    const lastRecall = newArray.sort((x, y) => x.report_date > y.report_date ? -1 : 1)[0].report_date
+    const lastDayOflastRecall = new Date(lastRecall.slice(0, 4) + '-' + lastRecall.slice(4, 6) + '-' + lastRecall.slice(6))
+    Date.prototype.addDay = function (days) {
+        this.setTime(this.getTime() + days * 24 * 60 * 60 * 1000);
+        return this;
+    };
+    const tomorrowDate = lastDayOflastRecall.addDay(1);
+    const dateStringForm = (
+        tomorrowDate.toJSON().slice(0, 8) + tomorrowDate.toJSON().slice(8, 10)
+    )
+        .split("-")
+        .join("");
     const today = (
         currentDate.toJSON().slice(0, 8) + currentDate.toJSON().slice(8, 10)
     )
@@ -21,14 +42,14 @@ const checkFdaApi = asyncHandler(async (req, res) => {
     };
     const yesterdayDate = currentDate.subtractDay(1);
     const yesterday = (
-      yesterdayDate.toJSON().slice(0, 8) + yesterdayDate.toJSON().slice(8, 10)
+        yesterdayDate.toJSON().slice(0, 8) + yesterdayDate.toJSON().slice(8, 10)
     )
-      .split("-")
-      .join("");
+        .split("-")
+        .join("");
     let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${yesterday}+TO+${yesterday}]&limit=1000`,
+        url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${dateStringForm}+TO+${yesterday}]&limit=1000`,
         headers: {},
     };
 

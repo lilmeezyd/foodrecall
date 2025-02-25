@@ -80,4 +80,29 @@ const getFdaRecalls = asyncHandler(async (req, res) => {
     res.status(200).json(newArray)
 })
 
-module.exports = { getRecalls, getFdaRecalls }
+const getFdaLastDate = asyncHandler(async (req, res) => {
+  const fdaRecalls = await Fda.findOne({})
+  const { results } = fdaRecalls
+  const a = []
+  const newArray = []
+  for (let i = 0; i < results.length; i++) {
+      if (a.includes(results[i].event_id)) continue;
+      a.push(results[i].event_id)
+      newArray.push(results[i])
+  }
+  const lastRecall = newArray.sort((x,y) => x.report_date > y.report_date ? -1 :1)[0].report_date
+  const lastDayOflastRecall = new Date(lastRecall.slice(0,4)+'-'+lastRecall.slice(4,6)+'-'+lastRecall.slice(6))
+  Date.prototype.addDay = function (days) {
+    this.setTime(this.getTime() + days * 24 * 60 * 60 * 1000);
+    return this;
+};
+const tomorrowDate = lastDayOflastRecall.addDay(1);
+  const dateStringForm = (
+    tomorrowDate.toJSON().slice(0, 8) + tomorrowDate.toJSON().slice(8, 10)
+)
+    .split("-")
+    .join("");
+    return dateStringForm
+})
+
+module.exports = { getRecalls, getFdaRecalls, getFdaLastDate }
