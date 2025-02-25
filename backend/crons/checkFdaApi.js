@@ -2,7 +2,6 @@ const axios = require('axios')
 const Fda = require('../models/fdaModel')
 const User = require("../models/userModel");
 const Recall = require("../models/recallModel");
-const { getFdaLastDate } = require('../controllers/fdaController')
 const { sendNewsletter } = require('../utils/subscribers.js');
 const asyncHandler = require("express-async-handler");
 
