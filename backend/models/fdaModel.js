@@ -4,4 +4,4 @@ const fdaSchema = mongoose.Schema({
     results: []
 })
 
-module.exports = mongoose.model('Fda', fdaSchema)
+module.exports = mongoose.model('Fda', fdaSchema) 

@@ -330,8 +330,9 @@ function FdaListView() {const [dropDownRisk, setDropDownRisk] = useState(false)
         
         <>
         {filteredRecalls.length === 0 ? <div className='not-found'>No Recalls Found!</div> : filteredRecalls.map((recall, idx) => (
-          <Link to={`/recalls/fda/${recall.event_id}`} key={idx} className="recall-list">
-          <div className='recall-title'>{recall.reason_for_recall}</div>
+          <Link to={`/recalls/fda/${recall.recall_number}`} key={idx} className="recall-list">
+          <div className='recall-title'><div>{recall.reason_for_recall}</div>
+          <div>{recall.product_description}</div></div>
           <div className='company'><span>Company:</span>&nbsp;{recall.recalling_firm}</div>
           <div className='recall-group'>
             <div className='risk-level'><span>Risk:</span>&nbsp;{recall.classification}</div>

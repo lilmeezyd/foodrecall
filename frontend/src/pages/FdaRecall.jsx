@@ -6,7 +6,7 @@ function FdaRecall() {
 
   const{ fda: recalls, errorFsis } = useRecall()
     const {fdaId} = useParams()
-    const recall = recalls.find(recall => recall.event_id === fdaId)
+    const recall = recalls.find(recall => recall.recall_number === fdaId)
   return (
     <>
     {errorFsis === 'Network Error' && <div>Check your internet connection!</div>}

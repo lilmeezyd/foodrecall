@@ -10,12 +10,12 @@ const checkFdaApi = asyncHandler(async (req, res) => {
     const users = await User.find({})
     const emails = users.map(x => x.email)
     const fdaRecalls = await Fda.findOne({})
-    const { results } = fdaRecalls
+    const { results } = fdaRecalls 
     const a = []
     const newArray = []
     for (let i = 0; i < results.length; i++) {
-        if (a.includes(results[i].event_id)) continue;
-        a.push(results[i].event_id)
+        if (a.includes(results[i].recall_number)) continue;
+        a.push(results[i].recall_number)
         newArray.push(results[i])
     }
     const lastRecall = newArray.sort((x, y) => x.report_date > y.report_date ? -1 : 1)[0].report_date
@@ -59,8 +59,8 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         const data = await response.data
         const { results } = data
         for (let i = 0; i < results.length; i++) {
-            if (a.includes(results[i].event_id)) continue;
-            a.push(results[i].event_id)
+            if (a.includes(results[i].recall_number)) continue;
+            a.push(results[i].recall_number)
             newArray.push(results[i])
         }
         const fda = await Fda.findOne({})
@@ -72,7 +72,7 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         // Log recall into database
         newArray.forEach(async (entry) => {
             await Recall.create({
-                id: entry.event_id,
+                id: entry.recall_number,
                 title: entry.reason_for_recall,
                 website: "FDA",
                 date: entry.report_date,
@@ -80,7 +80,7 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         });
 
         const link = `https://foodrecall.vercel.app/`
-        const welcomeSubject = "Recalls as reported by the FDA for the past 24 hours";
+        const welcomeSubject = "Recalls as reported by the FDA";
         const welcomeContent = newArray.map((entry) =>
             `<div><div>Reason: ${entry.reason_for_recall}</div>
             <div>Company: ${entry.recalling_firm}</div>
@@ -88,7 +88,7 @@ const checkFdaApi = asyncHandler(async (req, res) => {
             + entry?.report_date?.substring(4, 6) + '-'
             + entry?.report_date?.substring(6)}</div>
             <div>Area: ${entry.state}</div>
-            <a href=${link}/recalls/fda/${entry.event_id}>view recall</a>
+            <a href=${link}/recalls/fda/${entry.recall_number}>view recall</a>
             </div>`
         )
         const newWelcome = welcomeContent.join(',').replace(',', '')
