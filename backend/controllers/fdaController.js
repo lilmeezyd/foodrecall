@@ -22,7 +22,6 @@ const getRecalls = asyncHandler(async (req, res) => {
     if (fda === null) {
       const newFda = new Fda({ results })
       await newFda.save()
-      console.log(newFda)
     } else {
       fda.results.push(...results);
       await fda.save()
@@ -65,8 +64,8 @@ const getRecalls = asyncHandler(async (req, res) => {
 })
 
 const getFdaRecalls = asyncHandler(async (req, res) => {
-  const fdaRecalls = await Fda.find({})
-  res.status(200).json(fdaRecalls)
+  const fdaRecalls = await Fda.findOne({})
+  res.status(200).json(fdaRecalls?.results)
 })
 
 
