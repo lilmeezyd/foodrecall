@@ -1,7 +1,7 @@
 const axios = require('axios')
 const asyncHandler = require('express-async-handler')
 const Fda = require('../models/fdaModel')
-const { findOne } = require('../models/tokenModel')
+//const { findOne } = require('../models/tokenModel')
 
 //@desc Get all fda recalls
 //@route GETT /api/fda
@@ -10,7 +10,7 @@ const getRecalls = asyncHandler(async (req, res) => {
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: "https://api.fda.gov/food/enforcement.json?api_key=UfWlZLSEWUUJqeY3s0Qagdt7u5vsDThx1Jb4zKSA&search=report_date:[20241211+TO+20250412]&limit=1000",
+    url: "https://api.fda.gov/food/enforcement.json?api_key=UfWlZLSEWUUJqeY3s0Qagdt7u5vsDThx1Jb4zKSA&search=report_date:[20150101+TO+20150330]&limit=1000",
     headers: {}
   }
 
@@ -18,15 +18,9 @@ const getRecalls = asyncHandler(async (req, res) => {
     const response = await axios.request(config)
     const data = await response.data
     const { results } = data
-    const fda = await Fda.findOne({})
-    if (fda === null) {
-      const newFda = new Fda({ results })
-      await newFda.save()
-    } else {
-      fda.results.push(...results);
-      await fda.save()
-    }
-    res.status(200).json(results)
+    const newFda = new Fda({ results })
+    const saved = await newFda.save()
+    res.status(200).json(saved)
   } catch (error) {
     console.log(error)
   }
@@ -64,8 +58,9 @@ const getRecalls = asyncHandler(async (req, res) => {
 })
 
 const getFdaRecalls = asyncHandler(async (req, res) => {
-  const fdaRecalls = await Fda.findOne({})
-  res.status(200).json(fdaRecalls?.results)
+  const fdaRecalls = await Fda.find({})
+  const newRecalls = fdaRecalls.map(x => x.results).flat()
+  res.status(200).json(newRecalls)
 })
 
 
