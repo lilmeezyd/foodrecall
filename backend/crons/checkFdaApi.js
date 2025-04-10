@@ -9,16 +9,9 @@ const checkFdaApi = asyncHandler(async (req, res) => {
     const currentDate = new Date();
     const users = await User.find({})
     const emails = users.map(x => x.email)
-    const fdaRecalls = await Fda.findOne({})
-    const { results } = fdaRecalls 
-    const a = []
-    const newArray = []
-    for (let i = 0; i < results.length; i++) {
-        if (a.includes(results[i].recall_number)) continue;
-        a.push(results[i].recall_number)
-        newArray.push(results[i])
-    }
-    const lastRecall = newArray.sort((x, y) => x.report_date > y.report_date ? -1 : 1)[0].report_date
+    const fdaRecalls = await Fda.find({})
+    const newRecalls = fdaRecalls.map(x => x.results).flat()
+    const lastRecall = newRecalls.sort((x, y) => x.report_date > y.report_date ? -1 : 1)[0].report_date
     const lastDayOflastRecall = new Date(lastRecall.slice(0, 4) + '-' + lastRecall.slice(4, 6) + '-' + lastRecall.slice(6))
     Date.prototype.addDay = function (days) {
         this.setTime(this.getTime() + days * 24 * 60 * 60 * 1000);
@@ -53,24 +46,14 @@ const checkFdaApi = asyncHandler(async (req, res) => {
     };
 
     try {
-        const a = []
-        const newArray = []
         const response = await axios.request(config)
         const data = await response.data
         const { results } = data
-        for (let i = 0; i < results.length; i++) {
-            if (a.includes(results[i].recall_number)) continue;
-            a.push(results[i].recall_number)
-            newArray.push(results[i])
-        }
-        const fda = await Fda.findOne({})
-        for (let i = 0; i < newArray.length; i++) {
-            fda.results.push(newArray[i]);
-        }
-        await fda.save()
+        const newFda = new Fda({ results })
+        const saved = await newFda.save()
 
         // Log recall into database
-        newArray.forEach(async (entry) => {
+        saved.forEach(async (entry) => {
             await Recall.create({
                 id: entry.recall_number,
                 title: entry.reason_for_recall,
@@ -81,7 +64,7 @@ const checkFdaApi = asyncHandler(async (req, res) => {
 
         const link = `https://foodrecall.vercel.app/`
         const welcomeSubject = "Recalls as reported by the FDA";
-        const welcomeContent = newArray.map((entry) =>
+        const welcomeContent = saved.map((entry) =>
             `<div><div>Reason: ${entry.reason_for_recall}</div>
             <div>Company: ${entry.recalling_firm}</div>
             <div>Date: ${entry?.report_date?.substring(0, 4) + '-'
@@ -93,7 +76,7 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         )
         const newWelcome = welcomeContent.join(',').replace(',', '')
         sendNewsletter('denismoini09@gmail.com', welcomeSubject, newWelcome)
-        res.status(200).json('Food recall notifications successfully sent!');
+        //res.status(200).json('Food recall notifications successfully sent!');
     } catch (error) {
         const welcomeSubject = "Recalls as reported by the FDA for the past 24 hours";
         const content = `<div>
