@@ -50,21 +50,21 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         const data = await response.data
         const { results } = data
         const newFda = new Fda({ results })
-        const saved = await newFda.save()
+        await newFda.save()
 
         // Log recall into database
-        saved.forEach(async (entry) => {
+     /*   results.forEach(async (entry) => {
             await Recall.create({
                 id: entry.recall_number,
                 title: entry.reason_for_recall,
                 website: "FDA",
                 date: entry.report_date,
             });
-        });
+        });*/
 
         const link = `https://foodrecall.vercel.app/`
         const welcomeSubject = "Recalls as reported by the FDA";
-        const welcomeContent = saved.map((entry) =>
+        const welcomeContent = results.map((entry) =>
             `<div><div>Reason: ${entry.reason_for_recall}</div>
             <div>Company: ${entry.recalling_firm}</div>
             <div>Date: ${entry?.report_date?.substring(0, 4) + '-'
@@ -75,16 +75,18 @@ const checkFdaApi = asyncHandler(async (req, res) => {
             </div>`
         )
         const newWelcome = welcomeContent.join(',').replace(',', '')
-        sendNewsletter('denismoini09@gmail.com', welcomeSubject, newWelcome)
-        //res.status(200).json('Food recall notifications successfully sent!');
+  /* await Promise.all(
+      emails.map((email) => sendNewsletter(email, welcomeSubject, newWelcome))
+    );   */  sendNewsletter('denismoini09@gmail.com', welcomeSubject, newWelcome)
+        res.status(200).json('Food recall notifications successfully sent!');
     } catch (error) {
-        const welcomeSubject = "Recalls as reported by the FDA for the past 24 hours";
+        const welcomeSubject = "Recalls as reported by the FDA";
         const content = `<div>
         <h4>There were no recalls recorded in the past 24 hours</h4>
         </div>`
         sendNewsletter('denismoini09@gmail.com', welcomeSubject, content)
-        console.log(error.status)
     }
+    res.status(500).json({ message: "No Emails sent"})
 })
 
 module.exports = checkFdaApi
