@@ -1,44 +1,22 @@
-const nodemailer = require("nodemailer");
-const handlebars = require("handlebars");
-const fs = require("fs");
-const path = require("path");
+// utils/sendEmail.js
+const { Resend } = require('resend');
 
-const sendEmail = async (email, subject, payload, template) => {
+const resend = new Resend(process.env.RESEND_API_KEY);
+async function sendEmail({ to, subject, html }) {
+
   try {
-    const transporter = nodemailer.createTransport({
-      host: "live.smtp.mailtrap.io",
-      port: 587,
-      auth: {
-        user: "api",
-        pass: "9acd1804b60cd72f2a258ff99c052136",
-      },
+    const response = await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to,
+      subject,
+      html,
     });
 
-    const source = fs.readFileSync(path.join(__dirname, template), "utf8");
-    const compiledTemplate = handlebars.compile(source);
-    const options = () => {
-      return {
-        from: "mailtrap@demomailtrap.com",
-        to: email,
-        subject: subject,
-        html: compiledTemplate(payload),
-      };
-    };
-
-    // Send email
-    transporter.sendMail(options(), (error, info) => {
-      if (error) {
-        console.log(error);
-        return error;
-      } else {
-        return res.status(200).json({
-          success: true
-        });
-      }
-    });
+    return response;
   } catch (error) {
-    return error;
+    console.error('Resend Error:', error);
+    throw error;
   }
-};
+}
 
-module.exports = sendEmail;
+module.exports = { sendEmail }

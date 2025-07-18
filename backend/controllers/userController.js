@@ -37,7 +37,7 @@ const createUser = asyncHandler(async (req, res) => {
       <p>Thank you for subscribing to our food recalls updates!</p>
       <div>Unsubscribe <a href=${link}>here</a></div>
       </div>`;
-  sendNewsletter(email, welcomeSubject, welcomeContent);
+  sendEmail({to: email, subject: welcomeSubject, html: welcomeContent});
 
   res.status(200).json('Subscription successful! Check your email for a welcome email.');
 

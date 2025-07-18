@@ -4,6 +4,7 @@ const User = require("../models/userModel");
 const Recall = require("../models/recallModel");
 const { sendNewsletter } = require('../utils/subscribers.js');
 const asyncHandler = require("express-async-handler");
+const { sendEmail } = require ('../utils/sendEmail');
 
 const checkFdaApi = asyncHandler(async (req, res) => {
     const currentDate = new Date();
@@ -44,6 +45,7 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${dateStringForm}+TO+${yesterday}]&limit=1000`,
         headers: {},
     };
+    console.log(config.url)
 
     try {
         const response = await axios.request(config)
@@ -77,16 +79,16 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         const newWelcome = welcomeContent.join(',').replace(',', '')
   /* await Promise.all(
       emails.map((email) => sendNewsletter(email, welcomeSubject, newWelcome))
-    );   */  sendNewsletter('denismoini09@gmail.com', welcomeSubject, newWelcome)
+    );   */  await sendEmail({to:'denismoini09@gmail.com', subject: welcomeSubject, html: newWelcome})
         res.status(200).json('Food recall notifications successfully sent!');
     } catch (error) {
         const welcomeSubject = "Recalls as reported by the FDA";
         const content = `<div>
-        <h4>There were no recalls recorded in the past 24 hours</h4>
+        <h4>There were no recalls recorded by FDA</h4>
         </div>`
-        sendNewsletter('denismoini09@gmail.com', welcomeSubject, content)
+        await sendEmail({to: 'denismoini09@gmail.com', subject: welcomeSubject, html: content})
     }
-    res.status(500).json({ message: "No Emails sent"})
+    res.status(200).json({ message: "No Emails sent"})
 })
 
 module.exports = checkFdaApi

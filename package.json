@@ -13,6 +13,7 @@
   "license": "MIT",
   "description": "Food recall web application",
   "dependencies": {
+    "@react-email/components": "^0.3.1",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
@@ -29,7 +30,10 @@
     "moment-timezone": "^0.5.45",
     "mongoose": "^8.4.0",
     "node-cron": "^3.0.3",
-    "nodemailer": "^6.9.13"
+    "nodemailer": "^6.9.13",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "resend": "^4.7.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
