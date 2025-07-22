@@ -50,9 +50,12 @@ const checkFdaApi = asyncHandler(async (req, res) => {
     try {
         const response = await axios.request(config)
         const data = await response.data
-        const { results } = data
+       const { results } = data
         const newFda = new Fda({ results })
+
+       
         await newFda.save()
+       // console.log(newFda)
 
         // Log recall into database
      /*   results.forEach(async (entry) => {
@@ -64,22 +67,27 @@ const checkFdaApi = asyncHandler(async (req, res) => {
             });
         });*/
 
-        const link = `https://foodrecall.vercel.app/`
-        const welcomeSubject = "Recalls as reported by the FDA";
-        const welcomeContent = results.map((entry) =>
-            `<div><div>Reason: ${entry.reason_for_recall}</div>
-            <div>Company: ${entry.recalling_firm}</div>
-            <div>Date: ${entry?.report_date?.substring(0, 4) + '-'
-            + entry?.report_date?.substring(4, 6) + '-'
-            + entry?.report_date?.substring(6)}</div>
-            <div>Area: ${entry.state}</div>
-            <a href=${link}/recalls/fda/${entry.recall_number}>view recall</a>
-            </div>`
-        )
-        const newWelcome = welcomeContent.join(',').replace(',', '')
-  /* await Promise.all(
-      emails.map((email) => sendNewsletter(email, welcomeSubject, newWelcome))
-    );   */  await sendEmail({to:'denismoini09@gmail.com', subject: welcomeSubject, html: newWelcome})
+            const link = `https://foodrecall.vercel.app/`;
+              const welcomeSubject = "Recalls as reported by the FDA";
+
+              const newWelcome = results
+                .map((entry) => {
+                  const formattedDate = `${entry?.report_date?.substring(0, 4)}-${entry?.report_date?.substring(4, 6)}-${entry?.report_date?.substring(6)}`;
+                  return `
+                    <div style="margin-bottom: 10px;">
+                      <div><strong>Reason:</strong> ${entry.reason_for_recall}</div>
+                      <div><strong>Company:</strong> ${entry.recalling_firm}</div>
+                      <div><strong>Date:</strong> ${formattedDate}</div>
+                      <div><strong>Area:</strong> ${entry.state}</div>
+                      <a href="${link}/recalls/fda/${entry.recall_number}">View Recall</a>
+                    </div>`;
+                })
+                .join('');
+        const car = ['ryawa80@gmail.com',
+                     'davedash244@gmail.com','denismoini09@gmail.com',]
+   await Promise.all(
+      car.map((email) => sendEmail({to: email, subject: welcomeSubject, html: newWelcome}))
+    );     /*await sendEmail({to:'denismoini09@gmail.com', subject: welcomeSubject, html: newWelcome})*/
         res.status(200).json('Food recall notifications successfully sent!');
     } catch (error) {
         const welcomeSubject = "Recalls as reported by the FDA";
@@ -87,8 +95,9 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         <h4>There were no recalls recorded by FDA</h4>
         </div>`
         await sendEmail({to: 'denismoini09@gmail.com', subject: welcomeSubject, html: content})
+            res.status(200).json({ message: 'No new recalls recorded by FDA'})
+        
     }
-    res.status(200).json({ message: "No Emails sent"})
 })
 
 module.exports = checkFdaApi
