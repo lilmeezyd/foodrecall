@@ -1,6 +1,7 @@
 const axios = require('axios')
 const Fda = require('../models/fdaModel')
 const User = require("../models/userModel");
+const FdaRecall = require("../models/fdaRecallModel");
 const Recall = require("../models/recallModel");
 const { sendNewsletter } = require('../utils/subscribers.js');
 const asyncHandler = require("express-async-handler");
@@ -45,30 +46,26 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${dateStringForm}+TO+${yesterday}]&limit=1000`,
         headers: {},
     };
-    console.log(config.url)
-
+console.log(dateStringForm)
+console.log(yesterday)
     try {
         const response = await axios.request(config)
         const data = await response.data
        const { results } = data
         const newFda = new Fda({ results })
-
-       
         await newFda.save()
-       // console.log(newFda)
+        try {
+          await FdaRecall.insertMany(results, { ordered: false });
+        } catch (error) {
+          if (error.name === 'BulkWriteError') {
+            console.log('Some duplicates were skipped.');
+          } else {
+            throw error;
+          }
+        }
 
-        // Log recall into database
-     /*   results.forEach(async (entry) => {
-            await Recall.create({
-                id: entry.recall_number,
-                title: entry.reason_for_recall,
-                website: "FDA",
-                date: entry.report_date,
-            });
-        });*/
-
-            const link = `https://foodrecall.vercel.app/`;
-              const welcomeSubject = "Recalls as reported by the FDA";
+            const link = `https://foodrecall.xyz/`;
+              const welcomeSubject = "Recalls report by the FDA";
 
               const newWelcome = results
                 .map((entry) => {
@@ -85,16 +82,17 @@ const checkFdaApi = asyncHandler(async (req, res) => {
                 .join('');
         const car = ['ryawa80@gmail.com',
                      'davedash244@gmail.com','denismoini09@gmail.com',]
-   await Promise.all(
+        await sendEmail({ recipients: car, subject: welcomeSubject, html: newWelcome });
+  /* await Promise.all(
       car.map((email) => sendEmail({to: email, subject: welcomeSubject, html: newWelcome}))
-    );     /*await sendEmail({to:'denismoini09@gmail.com', subject: welcomeSubject, html: newWelcome})*/
+    );*/
         res.status(200).json('Food recall notifications successfully sent!');
     } catch (error) {
         const welcomeSubject = "Recalls as reported by the FDA";
         const content = `<div>
         <h4>There were no recalls recorded by FDA</h4>
         </div>`
-        await sendEmail({to: 'denismoini09@gmail.com', subject: welcomeSubject, html: content})
+        await sendEmail({recipients: ['denismoini09@gmail.com'], subject: welcomeSubject, html: content})
             res.status(200).json({ message: 'No new recalls recorded by FDA'})
         
     }

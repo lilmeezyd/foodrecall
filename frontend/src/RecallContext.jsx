@@ -79,7 +79,7 @@ function RecallProvider({ children }) {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: "https://foodrecallapi.vercel.app/api/getFda",
+      url: "https://foodrecallapi.vercel.app/api/getFda/old",
       headers: {}
     };
     try {
