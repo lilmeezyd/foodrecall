@@ -81,7 +81,7 @@ console.log(yesterday)
                 })
                 .join('');
         const car = ['ryawa80@gmail.com',
-                     'davedash244@gmail.com','denismoini09@gmail.com',]
+   'wilbertwina@gmail.com',       'davedash244@gmail.com','denismoini09@gmail.com',]
         await sendEmail({ recipients: car, subject: welcomeSubject, html: newWelcome });
   /* await Promise.all(
       car.map((email) => sendEmail({to: email, subject: welcomeSubject, html: newWelcome}))
