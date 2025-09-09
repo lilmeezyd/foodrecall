@@ -1,7 +1,7 @@
-const axios = require('axios')
-const asyncHandler = require('express-async-handler')
-const FdaRecall = require('../models/fdaRecallModel')
-const Fda = require('../models/fdaModel')
+const axios = require("axios");
+const asyncHandler = require("express-async-handler");
+const FdaRecall = require("../models/fdaRecallModel");
+const Fda = require("../models/fdaModel");
 //const { findOne } = require('../models/tokenModel')
 
 //@desc Get all fda recalls
@@ -25,7 +25,6 @@ const getRecalls = asyncHandler(async (req, res) => {
   } catch (error) {
     console.log(error)
   }*/
-
   /*const createFda = async (fdas) => {
       const newFda = []
       fdas.map(fda => newFda.push(...fda.results))
@@ -56,13 +55,13 @@ const getRecalls = asyncHandler(async (req, res) => {
         console.log(error.message)
       }
     })()*/
-})
+});
 const getFdaRecalls = asyncHandler(async (req, res) => {
- const { page = 1, limit = 10, risk, status, state, year, word } = req.query;
-const query = {};
+  const { page = 1, limit = 10, risk, status, state, year, word } = req.query;
+  const query = {};
   if (risk) query.classification = new RegExp(risk, i);
   if (status) query.status = status;
-  if (state) query.distribution_pattern = new RegExp(state, 'i');
+  if (state) query.distribution_pattern = new RegExp(state, "i");
   if (year) query.report_date = new RegExp(`^${year}`);
   if (word) {
     query.$or = [
@@ -85,27 +84,45 @@ const query = {};
     totalPages: Math.ceil(total / limit),
     total,
   });
-})
+});
 const getOldFdaRecalls = asyncHandler(async (req, res) => {
-const fdaRecalls = await Fda.find({}, 'results').lean()
-  const newRecalls = fdaRecalls.flatMap(doc => doc.results || [])
-  res.status(200).json(newRecalls)
-})
+  const fdaRecalls = await Fda.find({}, "results").lean();
+
+  // Flatten results
+  const newRecalls = fdaRecalls.flatMap((doc) => doc.results || []);
+
+  // Deduplicate by recall_number
+  const uniqueRecallsMap = new Map();
+  for (const recall of newRecalls) {
+    if (recall.recall_number && !uniqueRecallsMap.has(recall.recall_number)) {
+      uniqueRecallsMap.set(recall.recall_number, recall);
+    }
+  }
+
+  const uniqueRecalls = Array.from(uniqueRecallsMap.values());
+
+  res.status(200).json(uniqueRecalls);
+});
 
 const migrateFdaData = asyncHandler(async () => {
-  try{
-  const fdaDocs = await Fda.find({}, 'results').lean()
-  const recalls = fdaDocs.flatMap(doc => doc.results || [])
+  try {
+    const fdaDocs = await Fda.find({}, "results").lean();
+    const recalls = fdaDocs.flatMap((doc) => doc.results || []);
 
-const result = await FdaRecall.insertMany(recalls, { ordered: false })
-  console.log(`${result.length} new recalls inserted (duplicates skipped).`)
-} catch (err) {
-  if (err.code === 11000) {
-    console.warn('Some duplicates were skipped due to unique recall_number.')
-  } else {
-    console.error('Migration failed:', err)
+    const result = await FdaRecall.insertMany(recalls, { ordered: false });
+    console.log(`${result.length} new recalls inserted (duplicates skipped).`);
+  } catch (err) {
+    if (err.code === 11000) {
+      console.warn("Some duplicates were skipped due to unique recall_number.");
+    } else {
+      console.error("Migration failed:", err);
+    }
   }
-}} )
+});
 
-
-module.exports = { getRecalls, getFdaRecalls, getOldFdaRecalls, migrateFdaData }
+module.exports = {
+  getRecalls,
+  getFdaRecalls,
+  getOldFdaRecalls,
+  migrateFdaData,
+};

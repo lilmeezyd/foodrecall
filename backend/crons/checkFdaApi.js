@@ -46,15 +46,15 @@ const checkFdaApi = asyncHandler(async (req, res) => {
         url: `https://api.fda.gov/food/enforcement.json?search=report_date:[${dateStringForm}+TO+${yesterday}]&limit=1000`,
         headers: {},
     };
-console.log(dateStringForm)
-console.log(yesterday)
+/*console.log(dateStringForm)
+console.log(yesterday)*/
     try {
         const response = await axios.request(config)
         const data = await response.data
        const { results } = data
         const newFda = new Fda({ results })
         await newFda.save()
-        try {
+      /*  try {
           await FdaRecall.insertMany(results, { ordered: false });
         } catch (error) {
           if (error.name === 'BulkWriteError') {
@@ -62,7 +62,7 @@ console.log(yesterday)
           } else {
             throw error;
           }
-        }
+        }*/
 
             const link = `https://foodrecall.xyz/`;
               const welcomeSubject = "Recalls report by the FDA";

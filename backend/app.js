@@ -13,6 +13,7 @@ const timezone = "Africa/Kampala";
 const sendEmail = require("./utils/sendEmail");
 const Recall = require("./models/recallModel");
 const checkFdaApi = require("./crons/checkFdaApi")
+const checkUsdaApi = require("./crons/checkUsdaApi");
 const Fda = require('./models/fdaModel')
 const User = require("./models/userModel");
 
@@ -33,6 +34,7 @@ app.use("/api/fda", require("./routes/fdaRoutes"));
 app.use("/api/usda", require("./routes/usdaRoutes"));
 app.use('/api/getFda', require("./routes/getFdaRoutes"))
 app.use('/api/checkFdaApi', checkFdaApi)
+app.use('/api/checkUsdaApi', checkUsdaApi);
 
 
 
