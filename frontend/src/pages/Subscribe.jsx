@@ -12,8 +12,13 @@ function Subscribe() {
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    subscribe.subscribe(firstName, lastName, email)
+    try {
+   const res = subscribe.subscribe(firstName, lastName, email)
     navigate('/')
+    toast.success(res)
+    } catch(error) {
+      toast.error(error?.data?.message)
+    }
   }
   return (
     <div className='form-control'>
