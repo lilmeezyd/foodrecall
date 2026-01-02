@@ -88,7 +88,7 @@ function AuthenticationProvider({ children }) {
       toast.success(data)
       navigate("/");
     } catch (error) {
-      let errorMsg = error?.response?.data || error?.message
+      let errorMsg = error?.response?.data?.message || error?.message
       toast.error(errorMsg)
       setMessage(errorMsg)
     }

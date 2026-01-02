@@ -37,6 +37,7 @@ app.use('/api/checkFdaApi', checkFdaApi)
 app.use('/api/checkUsdaApi', checkUsdaApi);
 
 
+app.use(errorHandler);
 
 app.listen(port, console.log(`Server running at port: ${port}`));
 //module.exports = app

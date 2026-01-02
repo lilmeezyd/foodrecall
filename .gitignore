@@ -1,2 +1,55 @@
-node_modules
+# =========================
+# Node / JavaScript
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# Environment variables
+# =========================
 .env
+.env.*
+!.env.example
+
+# =========================
+# Build outputs
+# =========================
+dist/
+build/
+coverage/
+
+# =========================
+# Vite
+# =========================
+.vite/
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# OS / Editor junk
+# =========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# =========================
+# Temporary / cache files
+# =========================
+.cache/
+.tmp/
+*.swp
+*.swo
+
+# =========================
+# Misc
+# =========================
+*.local
+*.bak

@@ -2,14 +2,13 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const Admin = require("../models/adminModel")
+const Admin = require("../models/adminModel");
 const Token = require("../models/tokenModel");
 const crypto = require("crypto");
-const sendEmail = require("../utils/sendEmail");
-const { sendNewsletter } = require('../utils/subscribers.js');
-const fs = require("fs")
-const path = require("path")
-
+const { sendEmail } = require("../utils/sendEmail");
+const { sendNewsletter } = require("../utils/subscribers.js");
+const fs = require("fs");
+const path = require("path");
 
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -20,44 +19,125 @@ const createUser = asyncHandler(async (req, res) => {
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
-    res.status(400).json('Email already subscribed')
-    throw new Error('Email already subscribed')
+    res.status(400);
+    throw new Error("Email already subscribed");
   }
 
   const newUser = new User({ firstName, lastName, email });
   const savedUser = await newUser.save();
 
-  const { _id } = savedUser
+  const { _id } = savedUser;
 
+  const link = `https://foodrecall.vercel.app/unsubscribe?token=${_id}`;
+  const welcomeSubject = `Welcome to Food Recall Alerts!`;
+  const welcomeContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .header {
+      background: #111827;
+      color: #ffffff;
+      padding: 24px;
+      text-align: center;
+    }
+    .content {
+      padding: 30px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: #2563eb;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Welcome to the Food Recall Tool</h1>
+    </div>
 
-  const link = `https://foodrecall.vercel.app/unsubscribe?token=${_id}`
-  const welcomeSubject = `Welcome to Our food recalls tool!`;
-  const welcomeContent = `<div>
-      <h1>Hi, ${firstName}</h1>
-      <p>Thank you for subscribing to our food recalls updates!</p>
-      <div>Unsubscribe <a href=${link}>here</a></div>
-      </div>`;
-  sendEmail({recipients: [email], subject: welcomeSubject, html: welcomeContent});
+    <div class="content">
+      <p>Hi <strong>${firstName}</strong>,</p>
 
-  res.status(200).json('Subscription successful! Check your email for a welcome email.');
+      <p>
+        Thank you for subscribing to the <strong>Food Recall Tool</strong>.
+        You'll now receive important food safety alerts and updates directly in your inbox.
+      </p>
 
-})
+      <p>
+        If you ever wish to unsubscribe, you can do so at any time using the button below.
+      </p>
+
+      <a href="${link}" class="btn">Unsubscribe</a>
+
+      <p style="margin-top: 30px;">
+        Stay safe,<br />
+        <strong>The FoodRecall Team</strong>
+      </p>
+    </div>
+
+    <div class="footer">
+      Copyright © Food Recall App ${new Date().getFullYear()}.
+    </div>
+  </div>
+</body>
+</html>`;
+  sendEmail({
+    recipients: [email],
+    subject: welcomeSubject,
+    html: welcomeContent,
+  });
+
+  res
+    .status(200)
+    .json("Subscription successful! Check your email for a welcome email.");
+});
 
 const unsubscribeUser = asyncHandler(async (req, res) => {
   // Check if the email already exists in the database
   const existingUser = await User.findById(req.params.id);
 
   if (!existingUser) {
-    res.status(404)
-    throw new Error(`Email not subscribed for updates`)
+    res.status(404);
+    throw new Error(`Email not subscribed for updates`);
   }
 
-  const { _id } = existingUser
+  const { _id } = existingUser;
 
-  await User.findByIdAndDelete(_id)
+  await User.findByIdAndDelete(_id);
 
-  res.status(200).json('You have been unsubscribed')
-})
+  res.status(200).json("You have been unsubscribed");
+});
 
 //@desc Register User
 //@route POST /api/users
@@ -77,14 +157,16 @@ const registerAdmin = asyncHandler(async (req, res) => {
 
   // Check if password is required length
   if (password1.length < 6) {
-    res.status(400).json({ msg: "Passwords should have at least 6 characters!" });
+    res
+      .status(400)
+      .json({ msg: "Passwords should have at least 6 characters!" });
     throw new Error("Passwords should have at least 6 characters!");
   }
 
   // Check if user exists
   const userExists = await Admin.findOne({ email });
   if (userExists) {
-    res.status(400).json({ msg: "Admin already exists!" })
+    res.status(400).json({ msg: "Admin already exists!" });
     throw new Error("Admin already exists");
   }
 
@@ -97,7 +179,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     email,
-    password: hashedPassword
+    password: hashedPassword,
   });
 
   if (user) {
@@ -107,10 +189,10 @@ const registerAdmin = asyncHandler(async (req, res) => {
       lastName: user.lastName,
       email: user.email,
       token: generateToken(user._id),
-      msg: 'successfully registered'
+      msg: "successfully registered",
     });
   } else {
-    res.status(400).json("Invalid user data!" );
+    res.status(400).json("Invalid user data!");
     throw new Error("Invalid user data");
   }
 });
@@ -122,7 +204,7 @@ const requestPasswordReset = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const user = await Admin.findOne({ email });
   if (!user) {
-    res.status(400).json({ msg: "Admin does not exist!" })
+    res.status(400).json({ msg: "Admin does not exist!" });
     throw new Error("Admin does not exist");
   }
 
@@ -148,9 +230,9 @@ const requestPasswordReset = asyncHandler(async (req, res) => {
       <p>You requested for a password reset!</p>
       <div>Follow the link <a href=${link}>here</a></div>
       </div>`;
-  sendNewsletter(email, welcomeSubject, welcomeContent)
-  res.status(200).json('Password reset instructions sent to your email.');
-})
+  sendNewsletter(email, welcomeSubject, welcomeContent);
+  res.status(200).json("Password reset instructions sent to your email.");
+});
 
 //@desc Password restting
 //@access Public
@@ -158,19 +240,19 @@ const resetPassword = asyncHandler(async (req, res) => {
   const { userId, token, password } = req.body;
   let passwordResetToken = await Token.findOne({ userId });
   if (!passwordResetToken) {
-    res.status(400).json({ msg: "Invalid or expired password reset token!" })
+    res.status(400).json({ msg: "Invalid or expired password reset token!" });
     throw new Error("Invalid or expired password reset token");
   }
 
   const isValid = await bcrypt.compare(token, passwordResetToken.token);
   if (!isValid) {
-    res.status(400).json({ msg: "Invalid or expired password reset token!" })
+    res.status(400).json({ msg: "Invalid or expired password reset token!" });
     throw new Error("Invalid or expired password reset token");
   }
 
   // Hash password
-  const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(password, salt)
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
 
   await Admin.updateOne(
     { _id: userId },
@@ -199,13 +281,13 @@ const loginAdmin = asyncHandler(async (req, res) => {
   const user = await Admin.findOne({ email });
 
   if (!user && !password) {
-    res.status(400).json({ msg: "Enter all fields!" })
-    throw new Error("Enter all fields!")
+    res.status(400).json({ msg: "Enter all fields!" });
+    throw new Error("Enter all fields!");
   }
 
   if (!user) {
-    res.status(400).json({ msg: "Admin not registered!" })
-    throw new Error("Admin not registered!")
+    res.status(400).json({ msg: "Admin not registered!" });
+    throw new Error("Admin not registered!");
   }
 
   if (user && (await bcrypt.compare(password, user.password))) {
@@ -214,7 +296,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      msg: 'successfully logged in',
+      msg: "successfully logged in",
       token: generateToken(user._id),
     });
   } else {
@@ -227,12 +309,12 @@ const loginAdmin = asyncHandler(async (req, res) => {
 //@route PUT /api/users/newPassword
 //@access Private
 const changePassword = asyncHandler(async (req, res) => {
-  const { oldPassword, newPassword, confirmPassword } = req.body
-  const user = await Admin.findById(req.user._id)
-  const { password } = user
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+  const user = await Admin.findById(req.user._id);
+  const { password } = user;
   if (!oldPassword || !newPassword || !confirmPassword) {
-    res.status(400).json({ msg: 'Please enter all fields!' })
-    throw new Error('Please enter all fields')
+    res.status(400).json({ msg: "Please enter all fields!" });
+    throw new Error("Please enter all fields");
   }
 
   // Check if new passwords match
@@ -244,65 +326,70 @@ const changePassword = asyncHandler(async (req, res) => {
   // check if old and new passwords match
   if (user && (await bcrypt.compare(newPassword, password))) {
     res.status(400).json({ msg: "New password can't match old password!" });
-    throw new Error("New password can't match old password!")
+    throw new Error("New password can't match old password!");
   }
 
   // Check if newPassword is required length
   if (newPassword.length < 6) {
-    res.status(400).json({ msg: "Passwords should have at least 6 characters!" });
+    res
+      .status(400)
+      .json({ msg: "Passwords should have at least 6 characters!" });
     throw new Error("Passwords should have at least 6 characters!");
   }
 
   if (user && (await bcrypt.compare(oldPassword, password))) {
     //hash password
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(newPassword, salt)
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
     await Admin.updateOne(
       { _id: req.user._id },
       { $set: { password: hashedPassword } },
       { new: true }
     );
-    res.status(200).json({ msg: 'Password updated!' })
+    res.status(200).json({ msg: "Password updated!" });
   }
-})
+});
 
 //@desc Change Notifications
 //@route PUT /api/users/notifications
 //@access Private
 const changeNotifications = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id)
-  const { notifications } = req.body
+  const user = await User.findById(req.user._id);
+  const { notifications } = req.body;
 
   // check if the notifications are two
   if (Object.keys(req.body.notifications).length !== 2) {
-    res.status(400).json({ msg: 'Invalid Entry!' })
-    throw new Error('Invalid Entry!')
+    res.status(400).json({ msg: "Invalid Entry!" });
+    throw new Error("Invalid Entry!");
   }
 
   // check if the notifications are fda and usda
-  if (!Object.keys(req.body.notifications).includes('fda') || !Object.keys(req.body.notifications).includes('usda')) {
-    res.status(400).json({ msg: 'Fields should be either fda or usda' })
-    throw new Error('Fields should be either fda or usda')
+  if (
+    !Object.keys(req.body.notifications).includes("fda") ||
+    !Object.keys(req.body.notifications).includes("usda")
+  ) {
+    res.status(400).json({ msg: "Fields should be either fda or usda" });
+    throw new Error("Fields should be either fda or usda");
   }
   if (user) {
     await User.updateOne(
       { _id: req.user._id },
       { $set: { notifications } },
       { new: true }
-    )
-    res.status(200).json({ msg: 'Notifications updated!' })
+    );
+    res.status(200).json({ msg: "Notifications updated!" });
   }
-})
+});
 
 // @desc Change user details
 //@route PUT /api/uers/updateDetails
 //@access Private
 const updateDetails = asyncHandler(async (req, res) => {
-  const { firstName, lastName } = req.body
-  const user = await User.findById(req.user._id)
+  const { firstName, lastName } = req.body;
+  const user = await User.findById(req.user._id);
   if (!firstName || !lastName) {
-    res.status(400).json({ msg: 'Please enter all fields!' })
-    throw new Error('Please enter all fields')
+    res.status(400).json({ msg: "Please enter all fields!" });
+    throw new Error("Please enter all fields");
   }
 
   if (firstName !== user.firstName) {
@@ -311,7 +398,6 @@ const updateDetails = asyncHandler(async (req, res) => {
       { $set: { firstName } },
       { new: true }
     );
-
   }
 
   if (lastName !== user.lastName) {
@@ -322,9 +408,8 @@ const updateDetails = asyncHandler(async (req, res) => {
     );
   }
 
-  res.status(200).json({ msg: 'User details updated!' })
-
-})
+  res.status(200).json({ msg: "User details updated!" });
+});
 
 //@desc Get user data
 //@route GET /api/users/me
