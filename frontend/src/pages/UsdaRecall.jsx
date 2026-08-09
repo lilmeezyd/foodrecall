@@ -4,8 +4,8 @@ import { useMemo } from "react";
 
 function decodeHtmlEntities(text) {
   if (!text) return "";
-  return text
-    .replaceAll("&#039;", "'")
+  return String(text)
+    ?.replaceAll("&#039;", "'")
     .replaceAll("&amp;", "&")
     .replaceAll("&quot;", '"')
     .replaceAll("&rsquo;", "’")

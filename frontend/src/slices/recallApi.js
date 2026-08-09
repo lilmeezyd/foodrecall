@@ -27,8 +27,7 @@ export const recallApi = createApi({
       }),
       transformResponse: (response) => {
         const clean = str =>
-          str
-            ?.replaceAll('&#039;', "'")
+          String(str)?.replaceAll('&#039;', "'")
             .replaceAll('&amp;', '&')
             .replaceAll('&quot;', '"')
             .replaceAll('&rsquo;', '’')

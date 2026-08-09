@@ -49,8 +49,8 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
   
     const returnEdited = (recalls, word, cause, state, status, risk, year) => {
       const newArray =  recalls
-      .filter(x => x.field_recall_reason.includes(cause))
-      .filter(x => x.field_states.includes(state))
+      .filter(x => cause === "" ? x.field_recall_reason : x.field_recall_reason.includes(cause))
+      .filter(x => state === "" ? x.field_states : x.field_states.includes(state))
       .filter(x => risk.length === 0 ? x.field_recall_classification : x.field_recall_classification === risk)
       .filter(x => status.length === 0 ? x.field_recall_type : x.field_recall_type === status)
       .filter(x => year.length === 0 ? x.field_recall_date.split('-')[0] : x.field_recall_date.split('-')[0] === year)
@@ -65,6 +65,7 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
       () => returnRecalls(
         editedRecalls, curPage, pageSize
       ), [editedRecalls, curPage, pageSize])
+      console.log('recalls', recalls)
   
     let totalPages = Math.ceil(editedRecalls.length / pageSize)
   
@@ -80,7 +81,7 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
   
     const createCauses = () => {
       const newArray = []
-      editedRecalls.map(x => x.field_recall_reason).filter(x => x !== "").forEach(x => {
+      /*editedRecalls.map(x => x.field_recall_reason).filter(x => x !== "").forEach(x => {
         if (x.includes(',')) {
           newArray.push(...x.split(','))
         } else {
@@ -88,12 +89,17 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
         }
       })
   
-      return Array.from(new Set(newArray.map(x => x.trim())))
+      return Array.from(new Set(newArray.map(x => x.trim())))*/
+      return Array.from(new Set(editedRecalls.map(x => x.field_recall_reason).filter(x => x !== "").flat()))
     }
   
   
     const createStates = () => {
-      const newArray = []
+      return Array.from(new Set(recalls.map(x => x.field_states).flat())).sort((x, y) => {
+        if (x > y) return 1
+        return -1
+      })
+      /*const newArray = []
       recalls.map(x => x.field_states).filter(x => x !== "").forEach(x => {
         if (x.includes(',')) {
           newArray.push(...x.split(','))
@@ -104,7 +110,9 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
       return Array.from(new Set(newArray.map(x => x.trim()))).sort((x, y) => {
         if (x > y) return 1
         return -1
-      })
+      })*/
+
+      
     }
   
     const showCause = () => {
@@ -243,7 +251,7 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
       }
  
   
-  
+  console.log(filteredRecalls)
     return (
       <>
       {errorFsis === 'Network Error' ? <div>Check your internet connection!</div>:
@@ -417,7 +425,7 @@ function UsdaListView() {const [dropDownCause, setDropDownCause] = useState(fals
             </div>
             <div className='recall-details'>
               <div className='recall-date'><span>Date:</span>&nbsp; {recall.field_recall_date}</div>
-              {!!recall.field_states.length && <div className='recall-states'><span>Distribution Area:</span>&nbsp; {recall.field_states}</div>}
+              {!!recall.field_states.length && <div className='recall-states'><span>Distribution Area:</span>&nbsp; {recall?.field_states?.join(', ')}</div>}
             </div>
           </Link>
         ))}

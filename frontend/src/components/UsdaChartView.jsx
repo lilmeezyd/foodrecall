@@ -11,16 +11,8 @@ function UsdaChartView() {
 
     const returnData = (recalls, year1, year2) => {
         const data = []
-        const newArray = []
-        recalls.map(x => x.field_recall_reason).forEach(x => {
-            if (x.includes(',')) {
-                newArray.push(...x.split(','))
-            } else {
-                newArray.push(x)
-            }
-        })
 
-        Array.from(new Set(newArray.map(x => x.trim())))
+        Array.from(new Set(recalls.map(x => x.field_recall_reason)))
             .forEach(field => {
                 const subData = { name: field === "" ? 'Unnamed' : field, recalls: 0 }
                 recalls.filter(recall => recall.field_recall_date.split('-')[0] >= year1 && recall.field_recall_date.split('-')[0] <= year2)
@@ -88,17 +80,10 @@ function UsdaChartView() {
     const returnStateData = (recalls, year1, year2) => {
         const data = []
         const newArray = []
-        recalls.map(x => x.field_states).filter(x => x !== "").forEach(x => {
-            if (x.includes(',')) {
-                newArray.push(...x.split(','))
-            } else {
-                newArray.push(x)
-            }
-        })
-        Array.from(new Set(newArray.map(x => x.trim()))).sort((x, y) => {
-            if (x > y) return 1
-            return -1
-        }).forEach(field => {
+        Array.from(new Set(recalls.map(x => x.field_states).flat())).sort((x, y) => {
+        if (x > y) return 1
+        return -1
+      }).forEach(field => {
             const subData = { name: field, recalls: 0 }
             recalls
                 .filter(recall => recall.field_recall_date.split('-')[0] >= year1 && recall.field_recall_date.split('-')[0] <= year2)
