@@ -12,7 +12,7 @@ function UsdaChartView() {
     const returnData = (recalls, year1, year2) => {
         const data = []
 
-        Array.from(new Set(recalls.map(x => x.field_recall_reason)))
+        Array.from(new Set(recalls.map(x => x.field_recall_reason).flat()))
             .forEach(field => {
                 const subData = { name: field === "" ? 'Unnamed' : field, recalls: 0 }
                 recalls.filter(recall => recall.field_recall_date.split('-')[0] >= year1 && recall.field_recall_date.split('-')[0] <= year2)
@@ -156,8 +156,8 @@ function UsdaChartView() {
                             {/*</ResponsiveContainer>*/}
                         </div>
                         <div className='jump'>
-                            <label htmlFor="jump">Range of years:</label>
-                            <select onChange={changeYear1} name="jump" id="jump1">{
+                            <label htmlFor="jump1">Range of years:</label>
+                            <select onChange={changeYear1} name="jump1" id="jump1">{
                                 Array.from(new Set(recalls.map(x => x.field_year))).sort((x, y) => {
                                     if (x > y) return 1
                                     return -1
@@ -165,8 +165,8 @@ function UsdaChartView() {
                                     <option selected={year === year1} key={idx} name={year} value={year}>{year}</option>
                                 ))
                             }</select>
-                            <label htmlFor="jump">to:</label>
-                            <select onChange={changeYear2} name="jump" id="jump2">{
+                            <label htmlFor="jump2">to:</label>
+                            <select onChange={changeYear2} name="jump2" id="jump2">{
                                 Array.from(new Set(recalls.map(x => x.field_year))).sort((x, y) => {
                                     if (x > y) return -1
                                     return 1
