@@ -24,7 +24,7 @@ function Header() {
     return (
         <header className='header'>
             <div className="logo">
-                <Link to="/">FRA</Link>
+                <Link to="/">Food Recall Tool</Link>
             </div>
             <div className='header-div'>
             <ul className="main-menu">
