@@ -53,6 +53,7 @@ li {
   position: sticky;
   top: 0;
   background: #fff;
+  z-index: 4;
 }
 
 .header .header-div {
@@ -170,7 +171,7 @@ ul.mobile-menu {
   padding: 5px;
   margin-top: 2.5rem;
   background: #ffff;
-  z-index: 2;
+  z-index: 4;
   right: 20px;
   top: 37px;
   width: 150px;
