@@ -22,7 +22,7 @@ function Home() {
     <>
       {/* Always visible */}
       <div className="home-image">
-        <h1 className="home-image-heading">Food Recall Tool</h1>
+        {/*<h1 className="home-image-heading">Food Recall Tool</h1>*/}
         <span className="home-image-sub">Keep up to date with all food recalls</span>
       </div>
 
